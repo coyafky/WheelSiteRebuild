@@ -10,3 +10,5 @@ site/coverage/
 site/test-results/
 site/playwright-report/
 site/*.tsbuildinfo
+
+.worktrees/
