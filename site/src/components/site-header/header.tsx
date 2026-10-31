@@ -2,9 +2,9 @@
 
 import { usePathname } from 'next/navigation'
 import { MobileNavigationDrawer } from '@/components/site-header/mobile-navigation-drawer'
-import './header.css'
 import { PrimaryHeader } from '@/components/site-header/primary-header'
 import { ProductsMegaMenu } from '@/components/site-header/products-mega-menu'
+import './header.css'
 
 export type SiteHeaderProps = {
   currentPath?: string
