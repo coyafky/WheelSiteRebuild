@@ -1,11 +1,21 @@
 import { createElement } from 'react'
-import { cleanup, render, screen } from '@testing-library/react'
+import { cleanup, render, screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { SiteFooter } from '@/components/site-footer/site-footer'
 
 afterEach(() => {
   cleanup()
 })
+
+function inquiryClose() {
+  const heading = screen.getByRole('heading', { name: 'Start a sourcing inquiry' })
+
+  if (!heading.parentElement) {
+    throw new Error('inquiry close has no container')
+  }
+
+  return heading.parentElement
+}
 
 describe('site footer inquiry close', () => {
   it('shows one sourcing inquiry close by default', () => {
@@ -21,8 +31,9 @@ describe('site footer inquiry close', () => {
   it('links the quote action to /request-quote and contact to /contact', () => {
     render(createElement(SiteFooter))
 
-    const quote = screen.getByRole('link', { name: 'Request a Quote' })
-    const contact = screen.getByRole('link', { name: 'Contact' })
+    const close = inquiryClose()
+    const quote = within(close).getByRole('link', { name: 'Request a Quote' })
+    const contact = within(close).getByRole('link', { name: 'Contact' })
 
     expect(quote.tagName).toBe('A')
     expect(quote.getAttribute('href')).toBe('/request-quote')
@@ -36,7 +47,7 @@ describe('site footer inquiry close', () => {
     const footer = screen.getByRole('contentinfo')
 
     expect(screen.getByRole('heading', { name: 'Start a sourcing inquiry' }).tagName).toBe('H2')
-    expect(screen.getAllByRole('link').map((link) => link.textContent)).toEqual([
+    expect(within(inquiryClose()).getAllByRole('link').map((link) => link.textContent)).toEqual([
       'Request a Quote',
       'Contact',
     ])
@@ -49,7 +60,6 @@ describe('site footer inquiry close', () => {
 
     expect(screen.queryByRole('heading', { name: 'Start a sourcing inquiry' })).toBeNull()
     expect(screen.queryByRole('link', { name: 'Request a Quote' })).toBeNull()
-    expect(screen.queryByRole('link', { name: 'Contact' })).toBeNull()
   })
 
   it('uses the dark surface with light text', () => {
@@ -57,7 +67,9 @@ describe('site footer inquiry close', () => {
 
     const footer = screen.getByRole('contentinfo')
     const classes = footer.className.split(/\s+/)
-    const contactClasses = screen.getByRole('link', { name: 'Contact' }).className.split(/\s+/)
+    const contactClasses = within(inquiryClose())
+      .getByRole('link', { name: 'Contact' })
+      .className.split(/\s+/)
 
     expect(classes).toContain('bg-surface-dark')
     expect(classes).toContain('text-card')
