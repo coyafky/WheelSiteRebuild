@@ -9,36 +9,41 @@ export const contactMethods = [] as const
 export const certifications = [] as const
 
 const navigationRoutes = [
-  { id: 'home', label: 'Home', path: '/', published: true },
-  { id: 'products', label: 'Products', path: '/products', published: true },
-  { id: 'wheels', label: 'Wheels', path: '/products/wheels', published: true },
-  { id: 'ev-housings', label: 'EV Housings', path: '/products/ev-housings', published: true },
+  { id: 'home', label: 'Home', path: '/', published: false },
+  { id: 'products', label: 'Products', path: '/products', published: false },
+  { id: 'wheels', label: 'Wheels', path: '/products/wheels', published: false },
+  { id: 'wheel-flow-formed', label: 'Flow-Formed Wheels', path: '/products/wheels/flow-formed', published: false },
+  { id: 'wheel-forged', label: 'Forged Wheels', path: '/products/wheels/forged', published: false },
+  { id: 'wheel-custom', label: 'Custom Wheels', path: '/products/wheels/custom', published: false },
+  { id: 'ev-housings', label: 'EV Housings', path: '/products/ev-housings', published: false },
   {
     id: 'custom-aluminum',
     label: 'Custom Aluminum',
     path: '/products/custom-aluminum',
-    published: true,
+    published: false,
   },
-  { id: 'safety-tires', label: 'Safety Tires', path: '/products/safety-tires', published: true },
-  { id: 'engineering', label: 'Engineering', path: '/capabilities', published: true },
+  { id: 'safety-tires', label: 'Safety Tires', path: '/products/safety-tires', published: false },
+  { id: 'engineering', label: 'Engineering', path: '/capabilities', published: false },
   {
     id: 'wheel-engineering',
     label: 'Wheel Engineering',
     path: '/capabilities/wheels',
-    published: true,
+    published: false,
   },
   {
     id: 'safety-tire-capabilities',
     label: 'Safety Tire Capabilities',
     path: '/capabilities/safety-tires',
-    published: true,
+    published: false,
   },
-  { id: 'how-we-work', label: 'How We Work', path: '/how-we-work', published: true },
+  { id: 'how-we-work', label: 'How We Work', path: '/how-we-work', published: false },
   { id: 'blog', label: 'Blog', path: '/blog', published: publicationFlags.blog },
-  { id: 'about', label: 'About', path: '/about', published: true },
-  { id: 'manufacturing', label: 'Manufacturing', path: '/about/manufacturing', published: true },
-  { id: 'contact', label: 'Contact', path: '/contact', published: true },
-  { id: 'request-quote', label: 'Request a Quote', path: '/request-quote', published: true },
+  { id: 'blog-technical', label: 'Technical Articles', path: '/blog/technical', published: false },
+  { id: 'blog-company-news', label: 'Company News', path: '/blog/company-news', published: false },
+  { id: 'about', label: 'About', path: '/about', published: false },
+  { id: 'manufacturing', label: 'Manufacturing', path: '/about/manufacturing', published: false },
+  { id: 'contact', label: 'Contact', path: '/contact', published: false },
+  { id: 'request-quote', label: 'Request a Quote', path: '/request-quote', published: false },
   {
     id: 'privacy-policy',
     label: 'Privacy Policy',
@@ -61,6 +66,9 @@ const coreRouteIds = [
   'home',
   'products',
   'wheels',
+  'wheel-flow-formed',
+  'wheel-forged',
+  'wheel-custom',
   'ev-housings',
   'custom-aluminum',
   'safety-tires',
@@ -106,10 +114,10 @@ export function requireNavigationRoute(id: string): NavigationRoute {
   return route
 }
 
-export function listNavigationRoutes(ids: readonly string[]): NavigationRoute[] {
+export function listNavigationRoutes(ids: readonly string[], { includeUnpublished = false }: { includeUnpublished?: boolean } = {}): NavigationRoute[] {
   return ids.flatMap((id) => {
     const route = findNavigationRoute(id)
-    if (!route?.published || !isCanonicalPath(route.path)) return []
+    if (!route || (!route.published && !includeUnpublished) || !isCanonicalPath(route.path)) return []
     return [route]
   })
 }
