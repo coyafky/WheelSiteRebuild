@@ -1,8 +1,10 @@
+import { getNavigationRoute } from '@/navigation/route-registry'
+
 export const platformRoutes = [
-  { id: 'wheels', label: 'Wheels', path: '/products/wheels' },
-  { id: 'ev-housings', label: 'EV Housings', path: '/products/ev-housings' },
-  { id: 'custom-aluminum', label: 'Custom Aluminum', path: '/products/custom-aluminum' },
-  { id: 'safety-tires', label: 'Safety Tires', path: '/products/safety-tires' },
+  getNavigationRoute('wheels'),
+  getNavigationRoute('ev-housings'),
+  getNavigationRoute('custom-aluminum'),
+  getNavigationRoute('safety-tires'),
 ] as const
 
 export type PlatformId = (typeof platformRoutes)[number]['id']

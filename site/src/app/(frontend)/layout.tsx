@@ -1,5 +1,6 @@
 import React from 'react'
 import '../globals.css'
+import { SiteChrome } from '@/components/site-chrome/site-chrome'
 
 export const metadata = {
   description: 'WheelSite is under development.',
@@ -12,7 +13,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>
-        {children}
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   )
