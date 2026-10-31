@@ -1,7 +1,7 @@
-import { ArrowDownRight, ArrowRight, ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Hero } from '@/components/hero/hero'
 import type { HomePlatform, HomeWheelPath } from '@/content/home-model'
 
 type HomeViewProps = {
@@ -125,40 +125,22 @@ export function HomeView({ platforms, wheelPaths }: HomeViewProps) {
         Skip to content
       </a>
       <main id="main">
-        <section className="overflow-hidden bg-background" aria-labelledby="home-title">
+        <section className="overflow-hidden bg-background" aria-label="Home hero">
           <div className={`${container} flex min-h-[calc(100svh-4.5rem)] flex-col justify-between gap-6 py-6 sm:py-8 lg:gap-8 lg:py-12`}>
             <div className="flex items-center justify-between gap-4 border-b border-border pb-4 text-xs font-semibold tracking-[0.14em] text-muted-foreground uppercase">
               <span className="sm:hidden">Products / sourcing / development</span>
               <span className="hidden sm:inline">Automotive components / sourcing and development</span>
               <span className="hidden lg:inline">01 — 04 / product platforms</span>
             </div>
-            <div className="grid flex-1 items-center gap-4 sm:gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:gap-8">
-              <div className="relative z-10 max-w-[720px]">
-                <p className="mb-4 text-xs font-semibold tracking-[0.14em] text-primary uppercase">A clearer route from brief to next step</p>
-                <h1 id="home-title" className="mb-5 text-[42px] leading-[44px] font-[650] tracking-[-0.035em] text-foreground sm:text-[52px] sm:leading-[56px] lg:text-[64px] lg:leading-[68px]">
-                  Four platforms. <span className="text-primary">Two ways to work.</span>
-                </h1>
-                <p className="mb-6 max-w-[55ch] text-base leading-6 text-muted-foreground lg:text-[17px] lg:leading-[26px]">
-                  Explore Wheels, EV Housings, Custom Aluminum and Safety Tires. Start with a defined sourcing requirement or a custom development brief.
-                </p>
-                <div className="flex flex-wrap items-center gap-4 sm:gap-5">
-                  <Button asChild>
-                    <a href="#platforms">Explore platforms <ArrowDownRight aria-hidden="true" /></a>
-                  </Button>
-                  <a className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-foreground hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" href="#work-paths">
-                    Work paths <ArrowRight className="size-4" aria-hidden="true" />
-                  </a>
-                </div>
-              </div>
-              <div className="relative min-h-24 overflow-hidden sm:min-h-40 lg:min-h-[400px]" role="img" aria-label="Abstract visual placeholder; approved product imagery pending">
-                <div className="absolute top-1/2 right-[-6%] size-72 -translate-y-1/2 rounded-full border-[44px] border-foreground/10 sm:size-[430px] sm:border-[60px] lg:size-[580px] lg:border-[76px]" aria-hidden="true" />
-                <div className="absolute top-1/2 right-[3%] size-52 -translate-y-1/2 rounded-full border-2 border-brand-accent/60 sm:size-[320px] lg:size-[440px]" aria-hidden="true" />
-                <div className="absolute top-1/2 right-[20%] size-20 -translate-y-1/2 rounded-full border border-foreground/25 sm:size-28 lg:size-40" aria-hidden="true" />
-                <div className="absolute top-0 left-0 h-full w-px bg-border" aria-hidden="true" />
-                <span className="absolute top-3 left-5 text-xs font-semibold tracking-[0.14em] text-muted-foreground uppercase">Visual placeholder</span>
-                <span className="absolute bottom-3 left-5 border-l-2 border-brand-accent bg-background/90 py-2 pr-3 pl-4 text-sm font-semibold text-foreground">Approved product imagery pending</span>
-              </div>
-            </div>
+            <Hero
+              pageType="home"
+              embedded
+              title="Four platforms. Two ways to work."
+              description="Explore Wheels, EV Housings, Custom Aluminum and Safety Tires. Start with a defined sourcing requirement or a custom development brief."
+              primaryAction={{ label: 'Explore platforms', anchor: '#platforms' }}
+              secondaryAction={{ label: 'Work paths', anchor: '#work-paths' }}
+              media={{ pending: true, label: 'Approved product imagery pending' }}
+            />
             <div className="grid grid-cols-2 border-t border-border lg:grid-cols-4" aria-label="Four planned product platforms">
               {platforms.map((platform, index) => (
                 <div key={platform.id} className="flex min-h-20 flex-col justify-center gap-1 border-b border-border py-3 pr-3 lg:border-b-0 lg:border-r lg:pl-5 lg:first:pl-0 lg:last:border-r-0">
