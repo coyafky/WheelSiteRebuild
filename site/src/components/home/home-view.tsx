@@ -1,0 +1,300 @@
+import { ArrowDownRight, ArrowRight, ArrowUpRight } from 'lucide-react'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import type { HomePlatform, HomeWheelPath } from '@/content/home-model'
+
+type HomeViewProps = {
+  platforms: HomePlatform[]
+  wheelPaths: HomeWheelPath[]
+}
+
+const container = 'mx-auto w-full max-w-[1500px] px-5 sm:px-8 lg:px-10'
+const section = 'py-16 sm:py-20 lg:py-24'
+
+function SectionLabel({ children, number }: { children: React.ReactNode; number: string }) {
+  return (
+    <div className="mb-6 flex items-center gap-3 text-xs font-semibold tracking-[0.14em] text-primary uppercase">
+      <span>{number}</span>
+      <span className="h-px w-10 bg-brand-accent" aria-hidden="true" />
+      <span>{children}</span>
+    </div>
+  )
+}
+
+function ImagePlaceholder({ index }: { index: number }) {
+  return (
+    <div className="relative flex aspect-[5/3] items-center overflow-hidden border-b border-border bg-background p-6">
+      <span className="absolute -right-8 -bottom-20 size-64 rounded-full border-[28px] border-foreground/10" aria-hidden="true" />
+      <span className="absolute right-4 -bottom-11 text-[128px] leading-none font-semibold tracking-[-0.09em] text-foreground/10" aria-hidden="true">0{index}</span>
+      <span className="relative max-w-[15ch] text-sm leading-5 font-semibold text-muted-foreground">
+        Approved imagery pending
+      </span>
+      <span className="absolute top-5 left-6 text-xs font-semibold tracking-[0.16em] text-muted-foreground uppercase">Media slot / 0{index}</span>
+    </div>
+  )
+}
+
+function PlatformCard({ platform, index }: { platform: HomePlatform; index: number }) {
+  const content = (
+    <>
+      {platform.media ? (
+        <div className="aspect-[5/3] overflow-hidden border-b border-border bg-background">
+          {/* The image URL comes from an approved Payload Media record. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="size-full object-cover" src={platform.media.url} alt={platform.media.alt} />
+        </div>
+      ) : (
+        <ImagePlaceholder index={index} />
+      )}
+      <CardHeader className="gap-3">
+        <span className="text-xs font-semibold tracking-[0.12em] text-primary uppercase">
+          {platform.status === 'ready' ? 'Product platform' : 'Preview · content pending'}
+        </span>
+        <h3 className="text-[21px] leading-7 font-[650] text-foreground">{platform.title}</h3>
+      </CardHeader>
+      <CardContent className="flex flex-1 flex-col justify-between gap-6">
+        <p className="text-sm leading-[21px] text-muted-foreground">
+          {platform.intro || 'Platform details will appear after content and media review.'}
+        </p>
+        <span className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
+          {platform.href ? 'Explore platform' : 'Page pending release'}
+          {platform.href && <ArrowUpRight className="size-4" aria-hidden="true" />}
+        </span>
+      </CardContent>
+    </>
+  )
+
+  return (
+    <Card
+      variant="product"
+      className={
+        platform.href
+          ? 'h-full gap-0 pt-0 transition-transform duration-[var(--motion-fast)] hover:-translate-y-[3px] hover:border-brand-accent motion-reduce:transform-none'
+          : 'h-full gap-0 pt-0'
+      }
+    >
+      {platform.href ? (
+        <Link className="group flex h-full flex-col rounded-[var(--radius-product-card)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" href={platform.href}>
+          {content}
+        </Link>
+      ) : (
+        <div className="flex h-full flex-col">{content}</div>
+      )}
+    </Card>
+  )
+}
+
+function WheelPathCard({ path, index }: { path: HomeWheelPath; index: number }) {
+  return (
+    <article className="flex h-full flex-col rounded-[var(--radius-info-card)] border border-border bg-card p-6 lg:min-h-72">
+      <div className="mb-8 flex items-center justify-between gap-3">
+        <span className="text-xs font-semibold tracking-[0.12em] text-primary uppercase">
+          {path.kind === 'process' ? 'Process route' : 'Project route'}
+        </span>
+        <span className="text-sm font-semibold text-muted-foreground">0{index}</span>
+      </div>
+      <h4 className="mb-3 text-[21px] leading-7 font-[650]">{path.title}</h4>
+      <p className="mb-3 text-sm leading-[21px] text-muted-foreground">{path.buyerTask}</p>
+      <p className="mb-8 text-sm leading-[21px] text-muted-foreground">{path.inputs}</p>
+      <div className="mt-auto border-t border-border pt-4 text-sm font-semibold text-primary">
+        {path.href ? (
+          <Link className="inline-flex items-center gap-2 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" href={path.href}>
+            Explore this path <ArrowUpRight className="size-4" aria-hidden="true" />
+          </Link>
+        ) : (
+          <span>Destination pending release</span>
+        )}
+      </div>
+    </article>
+  )
+}
+
+/* Preview hierarchy: the buyer's task and four-platform orientation share the
+   first viewport; platform detail, nested Wheels paths, evidence, cooperation
+   and one inquiry close follow. The primary action is product discovery.
+   Light surfaces, red accents, type and spacing follow Design.md. The large
+   abstract drawing is a labeled media placeholder, not a product claim. */
+export function HomeView({ platforms, wheelPaths }: HomeViewProps) {
+  return (
+    <>
+      <a
+        href="#main"
+        className="sr-only fixed top-3 left-3 z-50 rounded-lg bg-card px-4 py-3 text-foreground focus:not-sr-only focus:outline-2 focus:outline-ring"
+      >
+        Skip to content
+      </a>
+      <header className="sticky top-0 z-40 border-b border-border bg-card/95 backdrop-blur-sm">
+        <div className={`${container} flex min-h-20 items-center justify-between gap-4`}>
+          <Link href="/" aria-current="page" className="flex min-w-0 items-center gap-3 rounded-sm font-semibold text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">
+            <span className="size-3 shrink-0 bg-brand-accent" aria-hidden="true" />
+            <span className="truncate">WheelSite <span className="font-normal text-muted-foreground">/ working title</span></span>
+          </Link>
+          <nav className="hidden items-center gap-8 text-sm font-semibold text-foreground lg:flex" aria-label="Home preview sections">
+            <a className="hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" href="#platforms">Platforms</a>
+            <a className="hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" href="#wheel-paths">Wheels paths</a>
+            <a className="hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" href="#evidence">Evidence</a>
+            <a className="hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" href="#work-paths">Ways to work</a>
+          </nav>
+          <span className="shrink-0 rounded-full border border-border px-3 py-2 text-xs font-semibold text-muted-foreground">
+            Internal preview
+          </span>
+        </div>
+      </header>
+
+      <main id="main">
+        <section className="overflow-hidden bg-background" aria-labelledby="home-title">
+          <div className={`${container} flex min-h-[calc(100svh-5rem)] flex-col justify-between gap-6 py-6 sm:py-8 lg:gap-8 lg:py-12`}>
+            <div className="flex items-center justify-between gap-4 border-b border-border pb-4 text-xs font-semibold tracking-[0.14em] text-muted-foreground uppercase">
+              <span className="sm:hidden">Products / sourcing / development</span>
+              <span className="hidden sm:inline">Automotive components / sourcing and development</span>
+              <span className="hidden lg:inline">01 — 04 / product platforms</span>
+            </div>
+            <div className="grid flex-1 items-center gap-4 sm:gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] lg:gap-8">
+              <div className="relative z-10 max-w-[720px]">
+                <p className="mb-4 text-xs font-semibold tracking-[0.14em] text-primary uppercase">A clearer route from brief to next step</p>
+                <h1 id="home-title" className="mb-5 text-[42px] leading-[44px] font-[650] tracking-[-0.035em] text-foreground sm:text-[52px] sm:leading-[56px] lg:text-[64px] lg:leading-[68px]">
+                  Four platforms. <span className="text-primary">Two ways to work.</span>
+                </h1>
+                <p className="mb-6 max-w-[55ch] text-base leading-6 text-muted-foreground lg:text-[17px] lg:leading-[26px]">
+                  Explore Wheels, EV Housings, Custom Aluminum and Safety Tires. Start with a defined sourcing requirement or a custom development brief.
+                </p>
+                <div className="flex flex-wrap items-center gap-4 sm:gap-5">
+                  <Button asChild>
+                    <a href="#platforms">Explore platforms <ArrowDownRight aria-hidden="true" /></a>
+                  </Button>
+                  <a className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-foreground hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" href="#work-paths">
+                    Work paths <ArrowRight className="size-4" aria-hidden="true" />
+                  </a>
+                </div>
+              </div>
+              <div className="relative min-h-24 overflow-hidden sm:min-h-40 lg:min-h-[400px]" role="img" aria-label="Abstract visual placeholder; approved product imagery pending">
+                <div className="absolute top-1/2 right-[-6%] size-72 -translate-y-1/2 rounded-full border-[44px] border-foreground/10 sm:size-[430px] sm:border-[60px] lg:size-[580px] lg:border-[76px]" aria-hidden="true" />
+                <div className="absolute top-1/2 right-[3%] size-52 -translate-y-1/2 rounded-full border-2 border-brand-accent/60 sm:size-[320px] lg:size-[440px]" aria-hidden="true" />
+                <div className="absolute top-1/2 right-[20%] size-20 -translate-y-1/2 rounded-full border border-foreground/25 sm:size-28 lg:size-40" aria-hidden="true" />
+                <div className="absolute top-0 left-0 h-full w-px bg-border" aria-hidden="true" />
+                <span className="absolute top-3 left-5 text-xs font-semibold tracking-[0.14em] text-muted-foreground uppercase">Visual placeholder</span>
+                <span className="absolute bottom-3 left-5 border-l-2 border-brand-accent bg-background/90 py-2 pr-3 pl-4 text-sm font-semibold text-foreground">Approved product imagery pending</span>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 border-t border-border lg:grid-cols-4" aria-label="Four planned product platforms">
+              {platforms.map((platform, index) => (
+                <div key={platform.id} className="flex min-h-20 flex-col justify-center gap-1 border-b border-border py-3 pr-3 lg:border-b-0 lg:border-r lg:pl-5 lg:first:pl-0 lg:last:border-r-0">
+                  <span className="text-xs font-semibold tracking-[0.12em] text-primary uppercase">0{index + 1} / platform</span>
+                  <span className="text-base font-semibold text-foreground">{platform.title}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="platforms" className={`${section} scroll-mt-24 bg-card`} aria-labelledby="platforms-title">
+          <div className={container}>
+            <SectionLabel number="01">Product platforms</SectionLabel>
+            <div className="mb-8 flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
+              <h2 id="platforms-title" className="max-w-[760px] text-[30px] leading-9 font-[650] tracking-[-0.025em] lg:text-[40px] lg:leading-[44px]">
+                Four platforms. Wheels first.
+              </h2>
+              <p className="max-w-[420px] text-base leading-6 text-muted-foreground">
+                These preview slots identify the planned catalog. A platform becomes a link only after its content and destination page are public.
+              </p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
+              {platforms.map((platform, index) => (
+                <PlatformCard key={platform.id} platform={platform} index={index + 1} />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="wheel-paths" className={`${section} scroll-mt-24 bg-background`} aria-labelledby="wheel-paths-title">
+          <div className={container}>
+            <div className="mb-8 flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
+              <div>
+                <SectionLabel number="01 / Wheels">Within Wheels</SectionLabel>
+                <h2 id="wheel-paths-title" className="text-[30px] leading-9 font-[650] tracking-[-0.025em] lg:text-[40px] lg:leading-[44px]">Choose a wheel path.</h2>
+              </div>
+              <p className="max-w-[510px] text-base leading-6 text-muted-foreground">
+                Two process topics and one custom project path within Wheels. Choose by the brief you have and the inputs you can share.
+              </p>
+            </div>
+            <div className="grid gap-4 lg:grid-cols-3 lg:gap-5">
+              {wheelPaths.map((path, index) => (
+                <WheelPathCard key={path.id} path={path} index={index + 1} />
+              ))}
+            </div>
+            <p className="mt-6 text-sm leading-[21px] text-muted-foreground">
+              Wheels overview and Wheel Engineering links will appear when those destination pages are published.
+            </p>
+          </div>
+        </section>
+
+        <section id="evidence" className={`${section} scroll-mt-24 bg-card`} aria-labelledby="evidence-title">
+          <div className={container}>
+            <SectionLabel number="02">Engineering and manufacturing</SectionLabel>
+            <div className="mb-8 flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
+              <h2 id="evidence-title" className="max-w-[720px] text-[30px] leading-9 font-[650] tracking-[-0.025em] lg:text-[40px] lg:leading-[44px]">
+                Evidence should stay with the product it supports.
+              </h2>
+              <p className="max-w-[410px] text-base leading-6 text-muted-foreground">
+                Process, testing and facility details will appear here only when their source and product scope have been reviewed.
+              </p>
+            </div>
+            <div className="grid gap-5 md:grid-cols-2 lg:gap-6">
+              {[
+                ['Engineering', 'Product-specific design and validation material'],
+                ['Manufacturing', 'Product-line process and facility context'],
+              ].map(([title, description]) => (
+                <Card key={title} className="min-h-56 justify-between bg-background">
+                  <CardHeader>
+                    <span className="text-xs font-semibold tracking-[0.12em] text-primary uppercase">Evidence pending</span>
+                    <h3 className="text-[21px] leading-7 font-[650]">{title}</h3>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm leading-[21px] text-muted-foreground">{description}. Verified details and destination links are pending.</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="work-paths" className={`${section} scroll-mt-24 bg-background`} aria-labelledby="work-paths-title">
+          <div className={container}>
+            <SectionLabel number="03">Ways to work</SectionLabel>
+            <h2 id="work-paths-title" className="mb-8 max-w-[760px] text-[30px] leading-9 font-[650] tracking-[-0.025em] lg:text-[40px] lg:leading-[44px]">
+              Start with the kind of brief you have.
+            </h2>
+            <div className="grid gap-5 lg:grid-cols-2 lg:gap-6">
+              <div className="flex min-h-72 flex-col rounded-[var(--radius-info-card)] border border-border border-t-2 border-t-brand-accent bg-card p-8">
+                <span className="mb-8 block text-xs font-semibold tracking-[0.12em] text-primary uppercase">01 / Standard sourcing</span>
+                <h3 className="mb-4 text-[26px] leading-8 font-[650]">A defined product requirement.</h3>
+                <p className="max-w-[55ch] text-base leading-6 text-muted-foreground">Bring the platform, intended application, specifications and target quantity. The product route will guide the next question once its reviewed content is public.</p>
+              </div>
+              <div className="flex min-h-72 flex-col rounded-[var(--radius-info-card)] border border-border border-t-2 border-t-foreground bg-card p-8">
+                <span className="mb-8 block text-xs font-semibold tracking-[0.12em] text-primary uppercase">02 / Custom development</span>
+                <h3 className="mb-4 text-[26px] leading-8 font-[650]">A drawing, sample or project brief.</h3>
+                <p className="max-w-[55ch] text-base leading-6 text-muted-foreground">Start with the application, key dimensions, material preferences and validation needs. The How We Work route will explain the evaluation stages when published.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer className="bg-surface-dark text-card" aria-label="Site preview footer">
+        <div className={`${container} py-16 sm:py-20 lg:py-24`}>
+          <p className="mb-5 text-xs font-semibold tracking-[0.12em] text-card/75 uppercase">Inquiry path · preview</p>
+          <h2 className="mb-5 max-w-[760px] text-[30px] leading-9 font-[650] tracking-[-0.025em] lg:text-[40px] lg:leading-[44px]">
+            Have a sourcing or development brief in mind?
+          </h2>
+          <p className="max-w-[60ch] text-base leading-6 text-card/80">
+            A single inquiry route will serve both paths after its privacy notice and submission flow are ready. No information is collected on this preview page.
+          </p>
+          <div className="mt-16 border-t border-card/20 pt-6 text-sm text-card/70">
+            Internal implementation preview · public content and brand assets pending approval
+          </div>
+        </div>
+      </footer>
+    </>
+  )
+}

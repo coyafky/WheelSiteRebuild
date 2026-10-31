@@ -1,0 +1,12 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+!.env.production.example
+site/node_modules/
+site/.next/
+site/media/
+site/coverage/
+site/test-results/
+site/playwright-report/
+site/*.tsbuildinfo

@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Industrial Performance — Design Preview</title>
+  <style>
+    :root {
+      --brand: #C3272B;
+      --brand-hover: #A91F23;
+      --ink: #11161B;
+      --muted: #56616B;
+      --white: #FFFFFF;
+      --subtle: #F3F5F6;
+      --border: #7D8993;
+      --line: #DDE2E6;
+      --error: #A91F23;
+      --content: 1200px;
+      --gutter: 24px;
+      --section-gap: 96px;
+      --radius-control: 4px;
+      --radius-card: 8px;
+      --fast: 150ms;
+      --standard: 250ms;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; color: var(--ink); background: var(--white); font: 400 16px/24px system-ui, sans-serif; }
+    a { color: inherit; }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    :focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+    .skip-link { position: fixed; z-index: 100; top: 8px; left: 8px; padding: 12px 16px; background: var(--white); transform: translateY(-150%); }
+    .skip-link:focus { transform: translateY(0); }
+    .container { width: min(calc(100% - (var(--gutter) * 2)), var(--content)); margin-inline: auto; }
+    .preview-strip { background: var(--subtle); border-bottom: 1px solid var(--line); font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .preview-strip .container { display: flex; justify-content: space-between; gap: 16px; padding-block: 10px; }
+    .preview-strip span:last-child { color: var(--muted); }
+    .site-header { position: relative; z-index: 20; background: var(--white); border-bottom: 1px solid var(--line); }
+    .header-inner { min-height: 80px; display: flex; align-items: center; justify-content: space-between; gap: 32px; }
+    .brand-slot { display: inline-flex; align-items: center; justify-content: center; width: 136px; min-height: 44px; border: 1px dashed var(--border); border-radius: var(--radius-control); text-decoration: none; color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .08em; }
+    .main-nav { display: flex; align-items: center; gap: 30px; margin-left: auto; }
+    .main-nav a { text-decoration: none; font-size: 14px; font-weight: 600; transition: color var(--fast) ease; }
+    .main-nav a:hover { color: var(--brand); }
+    .header-cta { white-space: nowrap; }
+    .menu-toggle { display: none; min-width: 44px; min-height: 44px; padding: 9px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--white); color: var(--ink); }
+    .menu-toggle svg { display: block; width: 24px; height: 24px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 44px; padding: 11px 20px; border: 1px solid transparent; border-radius: var(--radius-control); text-decoration: none; font-size: 14px; line-height: 20px; font-weight: 600; transition: background var(--fast) ease, border-color var(--fast) ease, transform var(--fast) ease; }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary { color: var(--white); background: var(--brand); border-color: var(--brand); }
+    .btn-primary:hover { background: var(--brand-hover); border-color: var(--brand-hover); }
+    .btn-secondary-light { color: var(--white); border-color: #AEB6BD; background: transparent; }
+    .btn-secondary-light:hover { border-color: var(--white); background: rgba(255,255,255,.08); }
+    .btn-outline { color: var(--ink); border-color: var(--ink); background: transparent; }
+    .btn-outline:hover { background: var(--subtle); }
+    .btn:focus-visible, .menu-toggle:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+    .hero .btn:focus-visible, .inquiry .btn:focus-visible { outline-color: var(--white); }
+    .hero { position: relative; overflow: hidden; color: var(--white); background: var(--ink); }
+    .hero::before { content: ""; position: absolute; inset: 0; opacity: .23; background-image: linear-gradient(rgba(255,255,255,.11) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.11) 1px, transparent 1px); background-size: 64px 64px; mask-image: linear-gradient(90deg, transparent 20%, black 100%); }
+    .hero-inner { position: relative; min-height: 600px; display: grid; grid-template-columns: 7fr 5fr; align-items: center; gap: 32px; padding-block: 72px; }
+    .hero-copy { max-width: 690px; z-index: 2; }
+    .eyebrow { display: flex; align-items: center; gap: 12px; margin: 0 0 24px; color: var(--brand); font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+    .eyebrow::before { content: ""; width: 24px; height: 3px; background: currentColor; }
+    .hero .eyebrow, .inquiry .eyebrow { color: var(--white); }
+    .hero .eyebrow::before, .inquiry .eyebrow::before { background: var(--brand); }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { max-width: 670px; margin-bottom: 24px; font-size: 48px; line-height: 56px; font-weight: 700; letter-spacing: -.045em; }
+    .hero-lead { max-width: 570px; margin-bottom: 32px; color: #D6DDE2; font-size: 18px; line-height: 28px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .hero-meta { display: flex; gap: 24px; margin-top: 68px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,.24); color: #C3CBD1; font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .hero-figure { position: relative; min-width: 0; margin: 0; justify-self: stretch; }
+    .hero-figure::before { content: ""; position: absolute; inset: 13% 4%; border: 1px solid rgba(255,255,255,.17); border-radius: 50%; }
+    .hero-figure svg { width: 100%; display: block; filter: drop-shadow(22px 35px 25px rgba(0,0,0,.45)); }
+    .hero-figure figcaption { position: absolute; bottom: 3%; right: 0; color: #AEB8C0; font-size: 12px; line-height: 16px; letter-spacing: .06em; text-transform: uppercase; }
+    .section { padding-block: var(--section-gap); }
+    .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 32px; margin-bottom: 40px; }
+    .section-heading h2 { max-width: 600px; margin-bottom: 0; font-size: 32px; line-height: 40px; font-weight: 700; letter-spacing: -.035em; }
+    .section-heading > p { max-width: 380px; margin-bottom: 0; color: var(--muted); }
+    .product-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+    .product-card { display: flex; flex-direction: column; min-width: 0; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-card); background: var(--white); transition: border-color var(--standard) ease, box-shadow var(--standard) ease; }
+    .product-card:hover { border-color: var(--border); box-shadow: 0 16px 36px rgba(17,22,27,.1); }
+    .card-art { position: relative; aspect-ratio: 1.15; display: grid; place-items: center; overflow: hidden; background: #E9EDF0; }
+    .card-art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,.5), transparent 55%); pointer-events: none; }
+    .card-art svg { width: 78%; max-height: 78%; color: #424D56; }
+    .art-label { position: absolute; left: 16px; bottom: 14px; z-index: 1; color: #56616B; font-size: 10px; line-height: 14px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .card-body { display: flex; flex: 1; flex-direction: column; padding: 24px; }
+    .card-index { margin-bottom: 12px; color: var(--brand); font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .1em; }
+    .card-body h3 { margin-bottom: 12px; font-size: 24px; line-height: 32px; font-weight: 700; letter-spacing: -.025em; }
+    .card-body p { min-height: 72px; margin-bottom: 24px; color: var(--muted); font-size: 14px; line-height: 24px; }
+    .text-link { display: inline-flex; align-items: center; gap: 9px; align-self: start; margin-top: auto; color: var(--ink); font-size: 14px; line-height: 20px; font-weight: 700; text-decoration: none; border-bottom: 2px solid var(--brand); padding-bottom: 4px; }
+    .text-link:hover { color: var(--brand); }
+    .capabilities { background: var(--subtle); }
+    .capability-layout { display: grid; grid-template-columns: 5fr 7fr; gap: 64px; align-items: start; }
+    .capability-copy h2 { max-width: 500px; margin-bottom: 24px; font-size: 40px; line-height: 48px; letter-spacing: -.04em; }
+    .capability-copy > p:not(.eyebrow) { max-width: 440px; margin-bottom: 32px; color: var(--muted); }
+    .evidence-list { display: grid; gap: 16px; }
+    .evidence-card { display: grid; grid-template-columns: 150px 1fr; min-height: 166px; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-card); background: var(--white); }
+    .evidence-visual { display: grid; place-items: center; padding: 20px; color: #6B767F; background: #E5E9EC; border-right: 1px solid var(--line); }
+    .evidence-visual svg { width: 100%; max-width: 92px; }
+    .evidence-card-content { padding: 24px; }
+    .evidence-card-content small { display: block; margin-bottom: 10px; color: var(--brand); font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+    .evidence-card-content h3 { margin-bottom: 8px; font-size: 22px; line-height: 30px; }
+    .evidence-card-content p { margin-bottom: 0; color: var(--muted); font-size: 14px; line-height: 20px; }
+    .evidence-note { margin-top: 16px; color: var(--muted); font-size: 12px; line-height: 20px; }
+    .inquiry { color: var(--white); background: var(--ink); }
+    .inquiry-layout { display: grid; grid-template-columns: 5fr 7fr; gap: 80px; align-items: start; }
+    .inquiry-copy h2 { max-width: 470px; margin-bottom: 24px; font-size: 40px; line-height: 48px; letter-spacing: -.04em; }
+    .inquiry-copy > p:not(.eyebrow) { max-width: 440px; color: #C9D0D6; }
+    .inquiry-points { margin: 40px 0 0; padding: 0; list-style: none; }
+    .inquiry-points li { padding: 14px 0 14px 28px; position: relative; border-top: 1px solid rgba(255,255,255,.2); color: #D6DDE2; font-size: 14px; line-height: 20px; }
+    .inquiry-points li::before { content: ""; position: absolute; left: 0; top: 21px; width: 8px; height: 8px; background: var(--brand); }
+    .form-panel { padding: 32px; border-radius: var(--radius-card); background: var(--white); color: var(--ink); }
+    .form-panel h3 { margin-bottom: 8px; font-size: 24px; line-height: 32px; }
+    .form-intro { margin-bottom: 24px; color: var(--muted); font-size: 14px; line-height: 20px; }
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 20px; }
+    .field { min-width: 0; }
+    .field.full { grid-column: 1 / -1; }
+    .field label { display: block; margin-bottom: 8px; font-size: 14px; line-height: 20px; font-weight: 600; }
+    .field label span { color: var(--brand-hover); }
+    .field input, .field select, .field textarea { display: block; width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--white); color: var(--ink); outline: none; }
+    .field textarea { min-height: 112px; resize: vertical; }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--ink); box-shadow: 0 0 0 2px var(--ink); }
+    .field [aria-invalid="true"] { border-color: var(--error); }
+    .error { min-height: 20px; margin: 4px 0 0; color: var(--error); font-size: 12px; line-height: 20px; }
+    .form-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-top: 16px; }
+    .form-footer p { max-width: 270px; margin: 0; color: var(--muted); font-size: 12px; line-height: 18px; }
+    .form-status { min-height: 20px; margin: 16px 0 0; color: var(--ink); font-size: 14px; line-height: 20px; font-weight: 600; }
+    .site-footer { padding-block: 28px; background: #090D10; color: #D6DDE2; }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; font-size: 12px; line-height: 20px; }
+    .footer-inner a { color: var(--white); }
+    @media (max-width: 1023px) {
+      .main-nav { display: none; position: absolute; top: 100%; left: 0; right: 0; margin: 0; padding: 16px var(--gutter) 24px; background: var(--white); border-bottom: 1px solid var(--line); box-shadow: 0 20px 30px rgba(17,22,27,.12); }
+      .main-nav.is-open { display: flex; flex-direction: column; align-items: stretch; gap: 0; }
+      .main-nav a { display: flex; align-items: center; min-height: 44px; border-bottom: 1px solid var(--line); }
+      .header-cta { margin-left: auto; }
+      .menu-toggle { display: block; }
+      .hero-inner { grid-template-columns: 1.2fr .8fr; min-height: 540px; }
+      .product-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .capability-layout, .inquiry-layout { gap: 40px; }
+    }
+    @media (max-width: 639px) {
+      :root { --gutter: 16px; --section-gap: 64px; }
+      .preview-strip .container { display: block; }
+      .preview-strip span:last-child { display: none; }
+      .header-inner { min-height: 68px; gap: 10px; }
+      .brand-slot { width: 108px; font-size: 10px; }
+      .header-cta { display: none; }
+      .hero-inner { display: block; min-height: 0; padding-block: 64px 52px; }
+      .hero-copy { position: relative; z-index: 2; }
+      h1 { font-size: 40px; line-height: 48px; }
+      .hero-lead { font-size: 16px; line-height: 24px; }
+      .hero-actions { display: grid; }
+      .hero-actions .btn { width: 100%; }
+      .hero-meta { margin-top: 48px; flex-wrap: wrap; gap: 12px 20px; }
+      .hero-figure { width: min(84%, 350px); margin: 24px auto 0; }
+      .hero-figure figcaption { bottom: 0; right: -8%; }
+      .section-heading { display: block; margin-bottom: 32px; }
+      .section-heading h2 { margin-bottom: 16px; font-size: 28px; line-height: 36px; }
+      .product-grid { grid-template-columns: 1fr; gap: 16px; }
+      .card-art { aspect-ratio: 1.6; }
+      .card-body p { min-height: 0; }
+      .capability-layout, .inquiry-layout { display: block; }
+      .capability-copy, .inquiry-copy { margin-bottom: 32px; }
+      .capability-copy h2, .inquiry-copy h2 { font-size: 32px; line-height: 40px; }
+      .evidence-card { grid-template-columns: 100px 1fr; }
+      .evidence-card-content { padding: 16px; }
+      .evidence-card-content h3 { font-size: 18px; line-height: 24px; }
+      .form-panel { padding: 24px 16px; }
+      .form-grid { display: block; }
+      .field { margin-bottom: 8px; }
+      .form-footer { display: block; }
+      .form-footer .btn { width: 100%; margin-top: 16px; }
+      .footer-inner { display: block; }
+      .footer-inner span { display: block; margin-bottom: 8px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="preview-strip"><div class="container"><span>Design system preview / proposed visual direction</span><span>Draft copy · concept imagery · no data sent</span></div></div>
+  <header class="site-header" id="top">
+    <div class="container header-inner">
+      <a class="brand-slot" href="#top" aria-label="Logo placeholder, back to top">LOGO / TBD</a>
+      <!-- Preview-only section links. Published page routes remain governed by the Sitemap. -->
+      <nav class="main-nav" id="main-nav" aria-label="Preview section navigation">
+        <a href="#products">Products</a><a href="#capabilities">Capabilities</a><a href="#inquiry">Inquiry</a>
+      </nav>
+      <a class="btn btn-primary header-cta" href="#inquiry">Request a Quote <span aria-hidden="true">↗</span></a>
+      <button class="menu-toggle" id="menu-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Open menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </header>
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow">Product catalog + OEM / ODM</p>
+          <h1 id="hero-title">Explore automotive parts for your next program.</h1>
+          <p class="hero-lead">Four focused product platforms, a clear view of manufacturing capabilities, and a direct path to discuss your requirements.</p>
+          <div class="hero-actions"><a class="btn btn-primary" href="#products">Explore Products <span aria-hidden="true">↘</span></a><a class="btn btn-secondary-light" href="#capabilities">View Capabilities</a></div>
+          <div class="hero-meta"><span>Industrial Performance</span><span>International B2B</span><span>Concept preview</span></div>
+        </div>
+        <figure class="hero-figure">
+          <svg viewBox="0 0 540 540" role="img" aria-label="Concept illustration of an automotive wheel, not a product photograph">
+            <defs><radialGradient id="tire" cx="50%" cy="50%"><stop offset="69%" stop-color="#1C2228"/><stop offset="77%" stop-color="#050708"/><stop offset="85%" stop-color="#353C42"/><stop offset="100%" stop-color="#0A0C0E"/></radialGradient><linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FAFBFC"/><stop offset=".25" stop-color="#626F79"/><stop offset=".52" stop-color="#D8DEE2"/><stop offset=".75" stop-color="#3D474E"/><stop offset="1" stop-color="#AAB4BB"/></linearGradient><radialGradient id="hub"><stop stop-color="#929DA5"/><stop offset=".65" stop-color="#1D252B"/><stop offset="1" stop-color="#69757D"/></radialGradient></defs>
+            <circle cx="270" cy="270" r="244" fill="url(#tire)" stroke="#3E474E" stroke-width="4"/>
+            <circle cx="270" cy="270" r="180" fill="#11171B" stroke="url(#metal)" stroke-width="20"/>
+            <circle cx="270" cy="270" r="157" fill="#252E34" stroke="#68747C" stroke-width="3"/>
+            <g fill="url(#metal)" stroke="#29343B" stroke-width="4">
+              <path id="spoke" d="M256 252 238 113q32-7 64 0l-18 139z"/>
+              <use href="#spoke" transform="rotate(45 270 270)"/><use href="#spoke" transform="rotate(90 270 270)"/><use href="#spoke" transform="rotate(135 270 270)"/><use href="#spoke" transform="rotate(180 270 270)"/><use href="#spoke" transform="rotate(225 270 270)"/><use href="#spoke" transform="rotate(270 270 270)"/><use href="#spoke" transform="rotate(315 270 270)"/>
+            </g>
+            <circle cx="270" cy="270" r="66" fill="url(#hub)" stroke="#BFC8CD" stroke-width="5"/><circle cx="270" cy="270" r="25" fill="#12191E" stroke="#8A969E" stroke-width="5"/>
+            <g fill="#0C1216" stroke="#BAC3C9" stroke-width="3"><circle cx="270" cy="225" r="7"/><circle cx="313" cy="256" r="7"/><circle cx="297" cy="306" r="7"/><circle cx="243" cy="306" r="7"/><circle cx="227" cy="256" r="7"/></g>
+            <circle cx="270" cy="270" r="228" fill="none" stroke="#727B80" stroke-width="2" stroke-dasharray="3 16" opacity=".55"/>
+          </svg>
+          <figcaption>Illustration only · asset TBD</figcaption>
+        </figure>
+      </div>
+    </section>
+    <section class="section products" id="products" aria-labelledby="products-title">
+      <div class="container">
+        <div class="section-heading"><div><p class="eyebrow">01 / Product platforms</p><h2 id="products-title">Find the right starting point.</h2></div><p>Explore the four approved platform categories. Product photography and specifications will be added only after verification.</p></div>
+        <div class="product-grid">
+          <article class="product-card"><div class="card-art"><svg viewBox="0 0 200 200" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="100" cy="100" r="76" stroke-width="13"/><circle cx="100" cy="100" r="54" stroke-width="6"/><circle cx="100" cy="100" r="18" stroke-width="5"/><path d="M100 46v36m0 36v36M46 100h36m36 0h36M62 62l25 25m26 26 25 25m0-76-25 25m-26 26-25 25" stroke-width="8"/></svg><span class="art-label">Concept illustration</span></div><div class="card-body"><span class="card-index">PLATFORM 01</span><h3>Wheels</h3><p>Begin a wheel sourcing or customization discussion.</p><a class="text-link discuss" href="#inquiry" data-product="Wheels">Discuss Wheels <span aria-hidden="true">↗</span></a></div></article>
+          <article class="product-card"><div class="card-art"><svg viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-linejoin="round" aria-hidden="true"><path d="m38 65 62-30 62 30v72l-62 30-62-30z" stroke-width="8"/><path d="m38 65 62 31 62-31M100 96v71" stroke-width="6"/><circle cx="100" cy="97" r="26" stroke-width="7"/><path d="M100 35v35m0 53v44M38 65l36 18m52 28 36 26" stroke-width="4"/></svg><span class="art-label">Concept illustration</span></div><div class="card-body"><span class="card-index">PLATFORM 02</span><h3>EV Housings</h3><p>Discuss housing requirements for an electric vehicle program.</p><a class="text-link discuss" href="#inquiry" data-product="EV Housings">Discuss EV Housings <span aria-hidden="true">↗</span></a></div></article>
+          <article class="product-card"><div class="card-art"><svg viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-linejoin="round" aria-hidden="true"><path d="m32 79 91-42 45 22-91 42zM32 79v33l45 22v-33m0 33 91-42V59" stroke-width="7"/><path d="m32 115 45 22 91-42M77 137v29l91-42V95M32 115v29l45 22" stroke-width="6"/><path d="m45 85 91-42m-78 49 91-42" stroke-width="3"/></svg><span class="art-label">Concept illustration</span></div><div class="card-body"><span class="card-index">PLATFORM 03</span><h3>Custom Aluminum</h3><p>Start a discussion based on your drawing or sample.</p><a class="text-link discuss" href="#inquiry" data-product="Custom Aluminum">Discuss Custom Aluminum <span aria-hidden="true">↗</span></a></div></article>
+          <article class="product-card"><div class="card-art"><svg viewBox="0 0 200 200" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="100" cy="100" r="75" stroke-width="19"/><circle cx="100" cy="100" r="43" stroke-width="7"/><path d="M43 50 31 40m26-2L44 24m106 26 12-10m-26-2 13-14M25 94H9m181 0h-16M43 150l-12 10m26 2-13 14m106-26 12 10m-26 2 13 14" stroke-width="5" stroke-linecap="round"/></svg><span class="art-label">Concept illustration</span></div><div class="card-body"><span class="card-index">PLATFORM 04</span><h3>Safety Tires</h3><p>Explore the safety tire platform and selection context.</p><a class="text-link discuss" href="#inquiry" data-product="Safety Tires">Discuss Safety Tires <span aria-hidden="true">↗</span></a></div></article>
+        </div>
+      </div>
+    </section>
+    <section class="section capabilities" id="capabilities" aria-labelledby="capabilities-title">
+      <div class="container capability-layout">
+        <div class="capability-copy"><p class="eyebrow">02 / Manufacturing credibility</p><h2 id="capabilities-title">Show the evidence behind the product.</h2><p>This preview shows where verified engineering, manufacturing and test material would help a buyer assess each product line. It does not assert unverified capabilities.</p><a class="btn btn-outline" href="#inquiry">Discuss Your Requirements <span aria-hidden="true">↗</span></a></div>
+        <div><div class="evidence-list">
+          <article class="evidence-card"><div class="evidence-visual"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><rect x="14" y="14" width="72" height="72"/><circle cx="50" cy="50" r="24"/><circle cx="50" cy="50" r="7"/><path d="M50 14v12m0 48v12M14 50h12m48 0h12"/></svg></div><div class="evidence-card-content"><small>Product-line evidence</small><h3>Wheel capabilities</h3><p>Reserved for verified process and test evidence tied to the wheel platform.</p></div></article>
+          <article class="evidence-card"><div class="evidence-visual"><svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><circle cx="50" cy="50" r="35"/><circle cx="50" cy="50" r="21"/><path d="m50 18 5 9-5 9-5-9zm0 46 5 9-5 9-5-9zM18 50l9-5 9 5-9 5zm46 0 9-5 9 5-9 5z"/></svg></div><div class="evidence-card-content"><small>Product-line evidence</small><h3>Safety tire capabilities</h3><p>Reserved for verified process and test evidence tied to the safety tire platform.</p></div></article>
+        </div><p class="evidence-note">Evidence panels are layout placeholders. Images, numbers, certifications and performance statements require source review before publication.</p></div>
+      </div>
+    </section>
+    <section class="section inquiry" id="inquiry" aria-labelledby="inquiry-title">
+      <div class="container inquiry-layout">
+        <div class="inquiry-copy"><p class="eyebrow">03 / Qualified inquiry</p><h2 id="inquiry-title">Tell us what you need to source.</h2><p>A short intake helps the right product discussion begin. This form demonstrates layout and validation only.</p><ul class="inquiry-points"><li>Identify the relevant product platform.</li><li>Share application, specifications or drawing context.</li><li>Review requirements before an actual inquiry is sent.</li></ul></div>
+        <form class="form-panel" id="preview-form" novalidate><h3>Request a quote</h3><p class="form-intro">Fields below are part of a visual prototype. Nothing is submitted.</p><div class="form-grid">
+          <div class="field"><label for="company">Company <span aria-hidden="true">*</span></label><input id="company" name="company" autocomplete="organization" required aria-describedby="company-error"><p class="error" id="company-error"></p></div>
+          <div class="field"><label for="email">Work email <span aria-hidden="true">*</span></label><input id="email" name="email" type="email" autocomplete="email" required aria-describedby="email-error"><p class="error" id="email-error"></p></div>
+          <div class="field full"><label for="product">Product platform <span aria-hidden="true">*</span></label><select id="product" name="product" required aria-describedby="product-error"><option value="">Select a platform</option><option>Wheels</option><option>EV Housings</option><option>Custom Aluminum</option><option>Safety Tires</option></select><p class="error" id="product-error"></p></div>
+          <div class="field full"><label for="requirements">Requirements <span aria-hidden="true">*</span></label><textarea id="requirements" name="requirements" required aria-describedby="requirements-error" placeholder="Application, specifications, quantities, or drawing context"></textarea><p class="error" id="requirements-error"></p></div>
+        </div><div class="form-footer"><p>Preview interaction only. No message will be sent or stored.</p><button class="btn btn-primary" type="submit">Preview Validation <span aria-hidden="true">↗</span></button></div><p class="form-status" id="form-status" role="status" aria-live="polite"></p></form>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="container footer-inner"><span>Industrial Performance design preview · Proposed, not approved for publication</span><a href="DESIGN.md">Read the design rules</a></div></footer>
+  <script>
+    const menuButton = document.getElementById('menu-toggle');
+    const menu = document.getElementById('main-nav');
+    function setMenu(open) { menu.classList.toggle('is-open', open); menuButton.setAttribute('aria-expanded', String(open)); menuButton.setAttribute('aria-label', open ? 'Close menu' : 'Open menu'); }
+    menuButton.addEventListener('click', () => setMenu(menuButton.getAttribute('aria-expanded') !== 'true'));
+    menu.addEventListener('click', event => { if (event.target.closest('a')) setMenu(false); });
+    document.addEventListener('keydown', event => { if (event.key === 'Escape' && menuButton.getAttribute('aria-expanded') === 'true') { setMenu(false); menuButton.focus(); } });
+    document.querySelectorAll('.discuss').forEach(link => link.addEventListener('click', () => { document.getElementById('product').value = link.dataset.product; }));
+    const form = document.getElementById('preview-form');
+    const fields = ['company', 'email', 'product', 'requirements'];
+    function validateField(field) {
+      const input = document.getElementById(field);
+      const error = document.getElementById(field + '-error');
+      let message = '';
+      if (!input.value.trim()) message = 'This field is required.';
+      else if (field === 'email' && !input.validity.valid) message = 'Enter a valid email address.';
+      error.textContent = message;
+      input.setAttribute('aria-invalid', String(Boolean(message)));
+      return !message;
+    }
+    fields.forEach(field => document.getElementById(field).addEventListener('input', () => { if (document.getElementById(field).getAttribute('aria-invalid') === 'true') validateField(field); }));
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      const valid = fields.map(validateField).every(Boolean);
+      const status = document.getElementById('form-status');
+      status.textContent = valid ? 'Preview complete. No inquiry was sent.' : 'Please review the highlighted fields. No inquiry was sent.';
+      if (!valid) document.getElementById(fields.find(field => document.getElementById(field).getAttribute('aria-invalid') === 'true')).focus();
+    });
+  </script>
+</body>
+</html>

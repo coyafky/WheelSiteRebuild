@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Light Industrial — Design Direction Preview</title>
+  <style>
+    :root {
+      --accent: #ED1C24;
+      --action: #C9151C;
+      --action-hover: #A61018;
+      --ink: #101113;
+      --muted: #666A70;
+      --page: #F5F5F7;
+      --paper: #FFFFFF;
+      --dark: #0B0B0C;
+      --line: #E0E0E0;
+      --control-border: #7D8993;
+      --error: #A61018;
+      --radius-info: 20px;
+      --radius-product: 26px;
+      --radius-button: 9999px;
+      --max: 1500px;
+      --gutter: 40px;
+      --section: 136px;
+      --ease: cubic-bezier(.22,1,.36,1);
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:90px}
+    body{margin:0;background:var(--page);color:var(--ink);font:400 17px/26px system-ui,sans-serif}
+    img{display:block;max-width:100%}
+    a{color:inherit}
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    :focus-visible{outline:3px solid var(--ink);outline-offset:4px}
+    .skip{position:fixed;top:10px;left:10px;z-index:100;padding:10px 16px;background:var(--paper);transform:translateY(-160%)}
+    .skip:focus{transform:none}
+    .wrap{width:min(calc(100% - 2 * var(--gutter)),var(--max));margin-inline:auto}
+    .preview-note{border-bottom:1px solid var(--line);background:var(--paper);color:var(--muted);font-size:12px;line-height:18px;font-weight:600;letter-spacing:.04em}
+    .preview-note .wrap{display:flex;justify-content:space-between;gap:24px;padding-block:9px}
+    .preview-note strong{color:var(--ink)}
+    .site-header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}
+    .header-row{display:flex;align-items:center;gap:40px;min-height:76px}
+    .brand-placeholder{display:grid;place-items:center;width:154px;min-height:44px;flex:none;border:1px dashed var(--control-border);border-radius:8px;color:var(--muted);font-size:12px;line-height:16px;font-weight:700;letter-spacing:.08em;text-decoration:none;transition:color .18s,border-color .18s}
+    .brand-placeholder:hover{color:var(--action);border-color:var(--accent)}
+    .site-nav{display:flex;align-items:center;gap:32px;margin-left:auto}
+    .site-nav a{display:inline-flex;align-items:center;min-height:44px;border-bottom:2px solid transparent;color:var(--ink);font-size:14px;font-weight:600;text-decoration:none;transition:color .18s,border-color .18s}
+    .site-nav a:hover,.site-nav a[aria-current="page"]{color:var(--action);border-color:var(--accent)}
+    .menu-toggle{display:none;place-items:center;width:44px;height:44px;border:1px solid var(--control-border);border-radius:50%;background:var(--paper);color:var(--ink);transition:color .18s,border-color .18s}
+    .menu-toggle:hover{color:var(--action);border-color:var(--accent)}
+    .menu-toggle svg{width:20px;height:20px}
+    .button{display:inline-flex;align-items:center;justify-content:center;gap:13px;min-height:44px;padding:11px 24px;border:1px solid transparent;border-radius:var(--radius-button);font-size:14px;line-height:20px;font-weight:650;text-align:center;text-decoration:none;transition:background .18s,border-color .18s,color .18s,transform .18s}
+    .button:hover{transform:translateY(-2px)}
+    .button.primary{background:var(--action);border-color:var(--action);color:var(--paper)}
+    .button.primary:hover{background:var(--action-hover);border-color:var(--action-hover)}
+    .button.outline{background:transparent;border-color:var(--ink);color:var(--ink)}
+    .button.outline:hover{background:var(--action);border-color:var(--action);color:var(--paper)}
+    .button.light{background:var(--paper);color:var(--ink)}
+    .button.light:hover{border-color:var(--accent);color:var(--action)}
+    .text-arrow{display:inline-flex;align-items:center;gap:12px;min-height:44px;color:var(--ink);font-size:14px;font-weight:700;text-decoration:none;transition:color .18s}
+    .text-arrow span{color:var(--accent);font-size:24px;line-height:1;transition:transform .18s var(--ease)}
+    .text-arrow:hover{color:var(--action)}
+    .text-arrow:hover span{transform:translateX(5px)}
+    .eyebrow{margin:0 0 20px;color:var(--muted);font-size:12px;line-height:18px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+    h1,h2,h3,p{margin-top:0}
+    .hero{position:relative;overflow:hidden;background:var(--page)}
+    .hero::before{content:"";position:absolute;left:-14%;bottom:-30%;width:65%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(237,28,36,.085),transparent 68%);pointer-events:none}
+    .hero-layout{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);align-items:center;gap:20px;min-height:676px}
+    .hero-copy{position:relative;z-index:2;padding-block:76px;max-width:680px}
+    .hero-copy h1{margin:0 0 24px;font-size:clamp(42px,4.2vw,60px);line-height:1.067;font-weight:650;letter-spacing:-.04em}
+    .hero-copy h1 em{color:var(--accent);font-style:normal}
+    .hero-lead{max-width:545px;margin-bottom:34px;color:var(--muted);font-size:18px;line-height:28px}
+    .hero-actions{display:flex;align-items:center;flex-wrap:wrap;gap:14px 28px}
+    .hero-trail{display:flex;flex-wrap:wrap;gap:8px;margin-top:44px}
+    .hero-trail span{padding:7px 13px;border:1px solid var(--line);border-radius:9999px;background:var(--paper);color:var(--muted);font-size:12px;line-height:18px;font-weight:600}
+    .hero-media{position:relative;align-self:stretch;display:flex;align-items:center;justify-content:center;min-width:0;overflow:hidden}
+    .hero-media::after{content:"";position:absolute;right:4%;bottom:6%;width:80%;height:11%;border-radius:50%;background:rgba(16,17,19,.08);filter:blur(26px);pointer-events:none}
+    .hero-media img{position:relative;z-index:1;width:min(100%,760px);max-height:680px;object-fit:contain;mix-blend-mode:multiply;mask-image:linear-gradient(to right,transparent,black 12%,black)}
+    .asset-tag{position:absolute;z-index:2;right:4px;bottom:22px;padding:7px 11px;border-radius:999px;background:rgba(255,255,255,.88);color:var(--muted);font-size:10px;line-height:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+    .section{padding-block:var(--section)}
+    .section-head{display:flex;align-items:end;justify-content:space-between;gap:40px;margin-bottom:44px}
+    .section-head h2{max-width:730px;margin:0;font-size:40px;line-height:44px;font-weight:650;letter-spacing:-.035em}
+    .section-head p:last-child{max-width:360px;margin:0;color:var(--muted);font-size:15px;line-height:24px}
+    .section-kicker{display:flex;align-items:center;gap:13px;margin-bottom:24px;color:var(--action);font-size:12px;line-height:18px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+    .section-kicker::before{content:"";width:20px;height:3px;background:var(--accent)}
+    .products{background:var(--page)}
+    .product-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px}
+    .product-card{display:flex;min-width:0;flex-direction:column;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius-product);background:var(--paper);transition:transform .32s var(--ease),box-shadow .32s var(--ease),border-color .18s}
+    .product-card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 8px 28px rgba(16,17,19,.10)}
+    .product-card:hover .text-arrow{color:var(--action)}
+    .product-media{position:relative;display:grid;place-items:center;height:305px;overflow:hidden;background:#F0F1F3}
+    .product-media img{width:100%;height:100%;object-fit:cover}
+    .product-media.contain img{object-fit:contain;mix-blend-mode:multiply}
+    .product-media .media-label{position:absolute;left:15px;bottom:15px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.88);color:var(--muted);font-size:10px;line-height:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+    .product-body{display:flex;flex:1;flex-direction:column;gap:0;padding:27px 26px 24px}
+    .product-body .index{margin-bottom:13px;color:var(--action);font-size:12px;line-height:18px;font-weight:700;letter-spacing:.12em}
+    .product-body h3{margin:0 0 11px;font-size:21px;line-height:28px;font-weight:650;letter-spacing:-.02em}
+    .product-body p{margin:0 0 24px;color:var(--muted);font-size:14px;line-height:21px}
+    .product-body .text-arrow{margin-top:auto}
+    .wheel-paths{margin-top:34px;padding:30px;border:1px solid var(--line);border-radius:var(--radius-product);background:var(--paper)}
+    .wheel-paths-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:23px}
+    .wheel-paths-head h3{margin:0;font-size:25px;line-height:31px;letter-spacing:-.025em}
+    .wheel-paths-head p{max-width:510px;margin:0;color:var(--muted);font-size:14px;line-height:21px}
+    .wheel-path-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    .wheel-path-card{min-width:0;overflow:hidden;border:1px solid var(--line);border-radius:var(--radius-info);background:var(--page)}
+    .wheel-path-media{position:relative;height:235px;background:#eee}
+    .wheel-path-media img{display:block;width:100%;height:100%;object-fit:cover}
+    .wheel-path-media span{position:absolute;left:14px;bottom:14px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.9);color:var(--muted);font-size:10px;line-height:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+    .wheel-path-body{padding:23px}
+    .wheel-path-card .path-kind{display:block;margin-bottom:15px;color:var(--action);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+    .wheel-path-card h4{margin:0 0 10px;font-size:20px;line-height:26px}
+    .wheel-path-card p{min-height:63px;margin:0 0 17px;color:var(--muted);font-size:14px;line-height:21px}
+    .wheel-path-card .path-route{display:block;overflow-wrap:anywhere;color:var(--action);font-size:12px;line-height:18px;font-weight:650}
+    .capabilities{background:var(--paper)}
+    .capability-intro{display:grid;grid-template-columns:5fr 7fr;gap:80px;align-items:end;margin-bottom:48px}
+    .capability-intro h2{max-width:600px;margin:0;font-size:40px;line-height:44px;font-weight:650;letter-spacing:-.035em}
+    .capability-intro p{max-width:630px;margin:0 0 4px;color:var(--muted)}
+    .evidence-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+    .evidence-card{overflow:hidden;border:1px solid var(--line);border-radius:var(--radius-info);background:var(--page)}
+    .evidence-card img{width:100%;height:310px;object-fit:cover}
+    .evidence-card .content{padding:27px 30px 30px}
+    .evidence-card small{display:block;margin-bottom:11px;color:var(--action);font-size:12px;line-height:18px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+    .evidence-card h3{margin:0 0 10px;font-size:21px;line-height:28px;font-weight:650}
+    .evidence-card p{max-width:550px;margin:0;color:var(--muted);font-size:14px;line-height:22px}
+    .asset-note{margin:24px 0 0;color:var(--muted);font-size:13px;line-height:21px}
+    .inquiry{background:var(--dark);color:var(--paper)}
+    .inquiry-layout{display:grid;grid-template-columns:5fr 7fr;gap:70px;align-items:start}
+    .inquiry-copy .section-kicker{color:var(--paper)}
+    .inquiry-copy h2{max-width:600px;margin:0 0 27px;font-size:48px;line-height:54px;font-weight:650;letter-spacing:-.04em}
+    .inquiry-copy > p:not(.section-kicker){max-width:480px;color:#D6D6D8}
+    .inquiry-list{margin:36px 0 0;padding:0;list-style:none}
+    .inquiry-list li{position:relative;padding:15px 0 15px 28px;border-top:1px solid #565659;color:#E0E0E2;font-size:14px;line-height:21px}
+    .inquiry-list li::before{content:"";position:absolute;left:0;top:21px;width:8px;height:8px;background:var(--accent);border-radius:50%}
+    .form-card{padding:36px;border-radius:var(--radius-info);background:var(--paper);color:var(--ink)}
+    .form-card h3{margin:0 0 7px;font-size:24px;line-height:30px;font-weight:650}
+    .form-card > p{margin-bottom:28px;color:var(--muted);font-size:14px;line-height:21px}
+    .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+    .field{min-width:0}
+    .field.full{grid-column:1/-1}
+    .field label{display:block;margin-bottom:8px;font-size:14px;line-height:20px;font-weight:600}
+    .field label span{color:var(--error)}
+    .field input,.field select,.field textarea{display:block;width:100%;min-height:44px;padding:10px 13px;border:1px solid var(--control-border);border-radius:8px;background:var(--paper);color:var(--ink);transition:border-color .18s}
+    .field input:not([aria-invalid="true"]):hover,.field select:not([aria-invalid="true"]):hover,.field textarea:not([aria-invalid="true"]):hover{border-color:var(--accent)}
+    .field textarea{min-height:110px;resize:vertical}
+    .field [aria-invalid="true"]{border-color:var(--error)}
+    .field input:focus,.field select:focus,.field textarea:focus{outline:2px solid var(--ink);outline-offset:2px}
+    .error{min-height:18px;margin:4px 0 0;color:var(--error);font-size:12px;line-height:18px}
+    .form-actions{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-top:15px}
+    .form-actions span{max-width:290px;color:var(--muted);font-size:12px;line-height:18px}
+    .form-status{min-height:20px;margin:18px 0 0;color:var(--ink);font-size:14px;line-height:20px;font-weight:600}
+    .footer{padding:26px 0;border-top:1px solid #565659;background:var(--dark);color:#D6D6D8;font-size:12px;line-height:20px}
+    .footer .wrap{display:flex;justify-content:space-between;gap:20px}
+    .footer a{color:var(--paper);text-decoration-color:var(--paper);transition:text-decoration-color .18s}
+    .footer a:hover{text-decoration-color:var(--accent)}
+    @media(max-width:1199px){
+      .product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .product-media{height:340px}
+    }
+    @media(max-width:1023px){
+      :root{--gutter:32px;--section:96px}
+      .site-nav{display:none;position:absolute;top:100%;left:0;right:0;margin:0;padding:16px var(--gutter) 24px;background:var(--paper);border-bottom:1px solid var(--line);box-shadow:0 15px 25px rgba(16,17,19,.1)}
+      .site-nav.open{display:flex;flex-direction:column;align-items:stretch;gap:0}
+      .site-nav a{border-bottom:1px solid var(--line)}
+      .header-cta{margin-left:auto}
+      .menu-toggle{display:grid;margin-left:auto}
+      .hero-layout{min-height:580px}
+      .capability-intro,.inquiry-layout{gap:40px}
+    }
+    @media(max-width:639px){
+      :root{--gutter:20px;--section:76px}
+      .preview-note .wrap{display:block}
+      .preview-note span:last-child{display:none}
+      .header-row{min-height:72px;gap:12px}
+      .brand-placeholder{width:128px;font-size:10px}
+      .header-cta{display:none}
+      .hero-layout{display:flex;flex-direction:column;align-items:stretch;gap:0;min-height:0}
+      .hero-copy{padding:76px 0 10px}
+      .hero-copy h1{font-size:40px;line-height:44px}
+      .hero-lead{font-size:16px;line-height:24px}
+      .hero-actions{display:grid;gap:12px}
+      .hero-actions .button,.hero-actions .text-arrow{width:100%;justify-content:center}
+      .hero-trail{margin-top:28px}
+      .hero-media{min-height:365px;margin-inline:-20px}
+      .hero-media img{width:100%;max-height:430px}
+      .asset-tag{right:24px;bottom:12px}
+      .section-head{display:block;margin-bottom:30px}
+      .section-head h2,.capability-intro h2{font-size:30px;line-height:36px}
+      .section-head p:last-child{margin-top:18px}
+      .product-grid,.evidence-grid,.wheel-path-grid{grid-template-columns:1fr;gap:20px}
+      .product-media{height:310px}
+      .wheel-paths{padding:22px;margin-top:24px}
+      .wheel-paths-head{display:block}
+      .wheel-paths-head p{margin-top:12px}
+      .wheel-path-card p{min-height:0}
+      .wheel-path-media{height:255px}
+      .capability-intro{display:block;margin-bottom:30px}
+      .capability-intro p{margin-top:20px}
+      .evidence-card img{height:245px}
+      .inquiry-layout{display:block}
+      .inquiry-copy{margin-bottom:38px}
+      .inquiry-copy h2{font-size:34px;line-height:40px}
+      .form-card{padding:25px 20px}
+      .form-grid{display:block}
+      .field{margin-bottom:4px}
+      .form-actions{display:block}
+      .form-actions .button{width:100%;margin-top:17px}
+      .footer .wrap{display:block}
+      .footer span{display:block;margin-bottom:7px}
+    }
+    @media(prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important}
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="preview-note"><div class="wrap"><span><strong>Design direction preview</strong> · Light industrial / image-led</span><span>Concept + archive imagery · approval pending · no data sent</span></div></div>
+  <header class="site-header" id="top">
+    <div class="wrap header-row">
+      <a class="brand-placeholder" href="#top" aria-label="Logo placeholder, back to top">LOGO / TBD</a>
+      <!-- These are preview section anchors. Published routes follow the Sitemap. -->
+      <nav class="site-nav" id="site-nav" aria-label="Preview sections"><a href="#products">Products</a><a href="#capabilities">Capabilities</a><a href="#inquiry">Inquiry</a></nav>
+      <a class="button outline header-cta" href="#inquiry">Request a Quote <span aria-hidden="true">↗</span></a>
+      <button class="menu-toggle" type="button" id="menu-toggle" aria-controls="site-nav" aria-expanded="false" aria-label="Open menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+    </div>
+  </header>
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="wrap hero-layout">
+        <div class="hero-copy"><p class="eyebrow">Automotive parts · OEM / ODM</p><h1 id="hero-title">Product possibilities, <em>built for business.</em></h1><p class="hero-lead">Explore four product platforms and share your sourcing or custom development requirements.</p><div class="hero-actions"><a class="button primary" href="#products">Explore Products <span aria-hidden="true">↗</span></a><a class="text-arrow" href="#capabilities">See Capabilities <span aria-hidden="true">→</span></a></div><div class="hero-trail"><span>Product catalog</span><span>Manufacturing evidence</span><span>Qualified inquiry</span></div></div>
+        <div class="hero-media"><img src="preview-assets/generic-wheel-concept.png" alt="Unbranded concept rendering of an automotive alloy wheel, not an actual product"><span class="asset-tag">Concept render · not a product claim</span></div>
+      </div>
+    </section>
+    <section class="section products" id="products" aria-labelledby="products-title">
+      <div class="wrap"><div class="section-head"><div><div class="section-kicker">01 / Product platforms</div><h2 id="products-title">Find the right starting point.</h2></div><p>Four approved platform categories. Images shown here are preview material; specifications and public claims require review.</p></div>
+        <div class="product-grid">
+          <article class="product-card"><div class="product-media contain"><img src="preview-assets/generic-wheel-concept.png" loading="lazy" alt="Unbranded concept rendering of an automotive alloy wheel"><span class="media-label">Concept render</span></div><div class="product-body"><span class="index">01 / PLATFORM</span><h3>Wheels</h3><p>Wheel sourcing and customization conversations.</p><a class="text-arrow discuss" href="#inquiry" data-product="Wheels">Discuss this platform <span aria-hidden="true">→</span></a></div></article>
+          <article class="product-card"><div class="product-media"><img src="image/非轮毂内容/其他产品/electric-motor-housing.jpeg" loading="lazy" alt="Metal electric motor housing from the local archive"><span class="media-label">Archive image</span></div><div class="product-body"><span class="index">02 / PLATFORM</span><h3>EV Housings</h3><p>Housing requirements for electric vehicle programs.</p><a class="text-arrow discuss" href="#inquiry" data-product="EV Housings">Discuss this platform <span aria-hidden="true">→</span></a></div></article>
+          <article class="product-card"><div class="product-media"><img src="image/非轮毂内容/其他产品/machined-components-set.jpeg" loading="lazy" alt="Machined aluminum components from the local archive"><span class="media-label">Archive image</span></div><div class="product-body"><span class="index">03 / PLATFORM</span><h3>Custom Aluminum</h3><p>Start from a drawing, sample or application need.</p><a class="text-arrow discuss" href="#inquiry" data-product="Custom Aluminum">Discuss this platform <span aria-hidden="true">→</span></a></div></article>
+          <article class="product-card"><div class="product-media"><img src="image/安全轮胎/用户在轮毂爆胎后痛点/04_使用痛点-暗色轮胎胎面近景.jpg" loading="lazy" alt="Close view of a tire tread from the local archive"><span class="media-label">Archive image</span></div><div class="product-body"><span class="index">04 / PLATFORM</span><h3>Safety Tires</h3><p>Explore the safety tire product platform.</p><a class="text-arrow discuss" href="#inquiry" data-product="Safety Tires">Discuss this platform <span aria-hidden="true">→</span></a></div></article>
+        </div>
+        <div class="wheel-paths" id="wheel-paths" aria-labelledby="wheel-paths-title">
+          <div class="wheel-paths-head"><div><div class="section-kicker">Within Wheels</div><h3 id="wheel-paths-title">Explore wheel programs.</h3></div><p>Two manufacturing routes and one project path. These preview cards show the planned homepage hierarchy; public links open only when each child page is ready.</p></div>
+          <div class="wheel-path-grid">
+            <article class="wheel-path-card"><div class="wheel-path-media"><img src="preview-assets/wheel-flow-formed-concept.png" loading="lazy" alt="Unbranded flow-formed wheel concept render; not an actual product or process proof"><span>Concept render</span></div><div class="wheel-path-body"><span class="path-kind">Manufacturing route 01</span><h4>Flow-Formed Wheels</h4><p>Explore the flow-forming route, selection inputs and evidence to review for a sourcing inquiry.</p><span class="path-route">/products/wheels/flow-formed</span></div></article>
+            <article class="wheel-path-card"><div class="wheel-path-media"><img src="preview-assets/wheel-forged-concept.png" loading="lazy" alt="Unbranded forged wheel concept render; not an actual product or process proof"><span>Concept render</span></div><div class="wheel-path-body"><span class="path-kind">Manufacturing route 02</span><h4>Forged Wheels</h4><p>Review forged wheel requirements, applicable material choices and verification questions.</p><span class="path-route">/products/wheels/forged</span></div></article>
+            <article class="wheel-path-card"><div class="wheel-path-media"><img src="preview-assets/wheel-custom-concept.png" loading="lazy" alt="Unbranded custom wheel concept render with a faint design sheet; not an actual available product"><span>Concept render</span></div><div class="wheel-path-body"><span class="path-kind">Custom project</span><h4>Custom Wheels</h4><p>Start from a drawing, sample or target requirement; the process is chosen with the project.</p><span class="path-route">/products/wheels/custom</span></div></article>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section capabilities" id="capabilities" aria-labelledby="capabilities-title">
+      <div class="wrap"><div class="section-kicker">02 / Manufacturing credibility</div><div class="capability-intro"><h2 id="capabilities-title">Evidence belongs beside each product.</h2><p>Give buyers a direct route from a product platform to relevant, verified process and test material. These panels show the visual treatment; they do not approve facility or performance claims.</p></div>
+        <div class="evidence-grid"><article class="evidence-card"><img src="image/wheel/生产工艺/wheel-cnc-machining.jpeg" loading="lazy" alt="Wheel machining scene from the local archive"><div class="content"><small>Product-line evidence</small><h3>Wheel capabilities</h3><p>Space for sourced engineering, production and validation material associated with wheels.</p></div></article><article class="evidence-card"><img src="image/安全轮胎/测试画面/21_测试画面-轮胎胎面接触钉板.jpg" loading="lazy" alt="Tire contact with a nail test board, from the local archive"><div class="content"><small>Product-line evidence</small><h3>Safety tire capabilities</h3><p>Space for sourced process and test material associated with safety tires.</p></div></article></div><p class="asset-note">Archive imagery is used only to preview layout. Confirm source, rights, subject identity and claim relevance before publication.</p>
+      </div>
+    </section>
+    <section class="section inquiry" id="inquiry" aria-labelledby="inquiry-title">
+      <div class="wrap inquiry-layout"><div class="inquiry-copy"><div class="section-kicker">03 / Qualified inquiry</div><h2 id="inquiry-title">Start the right conversation.</h2><p>Share a product platform and the context that matters to your sourcing decision. This form is a visual prototype with local-only validation.</p><ul class="inquiry-list"><li>Select a relevant product platform.</li><li>Include your application, specifications or drawing context.</li><li>Review the information before a real inquiry flow is connected.</li></ul></div>
+        <form class="form-card" id="preview-form" novalidate><h3>Request a quote</h3><p>Prototype form · nothing is submitted or stored.</p><div class="form-grid"><div class="field"><label for="company">Company <span aria-hidden="true">*</span></label><input id="company" name="company" autocomplete="organization" required aria-describedby="company-error"><p class="error" id="company-error"></p></div><div class="field"><label for="email">Work email <span aria-hidden="true">*</span></label><input id="email" name="email" type="email" autocomplete="email" required aria-describedby="email-error"><p class="error" id="email-error"></p></div><div class="field full"><label for="product">Product platform <span aria-hidden="true">*</span></label><select id="product" name="product" required aria-describedby="product-error"><option value="">Select a platform</option><option>Wheels</option><option>EV Housings</option><option>Custom Aluminum</option><option>Safety Tires</option></select><p class="error" id="product-error"></p></div><div class="field full"><label for="requirements">Requirements <span aria-hidden="true">*</span></label><textarea id="requirements" name="requirements" required aria-describedby="requirements-error" placeholder="Application, specifications, or drawing context"></textarea><p class="error" id="requirements-error"></p></div></div><div class="form-actions"><span>Preview interaction only. No message will be sent.</span><button class="button primary" type="submit">Preview Validation <span aria-hidden="true">↗</span></button></div><p class="form-status" id="form-status" role="status" aria-live="polite"></p></form>
+      </div>
+    </section>
+  </main>
+  <footer class="footer"><div class="wrap"><span>Light industrial design preview · proposed values · not approved for publication</span><a href="DESIGN.md">Read the design rules</a></div></footer>
+  <script>
+    const menuButton=document.getElementById('menu-toggle');
+    const menu=document.getElementById('site-nav');
+    function setMenu(open){menu.classList.toggle('open',open);menuButton.setAttribute('aria-expanded',String(open));menuButton.setAttribute('aria-label',open?'Close menu':'Open menu')}
+    menuButton.addEventListener('click',()=>setMenu(menuButton.getAttribute('aria-expanded')!=='true'));
+    menu.addEventListener('click',event=>{if(event.target.closest('a'))setMenu(false)});
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'&&menuButton.getAttribute('aria-expanded')==='true'){setMenu(false);menuButton.focus()}});
+    document.querySelectorAll('.discuss').forEach(link=>link.addEventListener('click',()=>{document.getElementById('product').value=link.dataset.product}));
+    const fields=['company','email','product','requirements'];
+    function validate(name){const input=document.getElementById(name);const error=document.getElementById(name+'-error');let message='';if(!input.value.trim())message='This field is required.';else if(name==='email'&&!input.validity.valid)message='Enter a valid email address.';error.textContent=message;input.setAttribute('aria-invalid',String(Boolean(message)));return !message}
+    fields.forEach(name=>document.getElementById(name).addEventListener('input',()=>{if(document.getElementById(name).getAttribute('aria-invalid')==='true')validate(name)}));
+    document.getElementById('preview-form').addEventListener('submit',event=>{event.preventDefault();const valid=fields.map(validate).every(Boolean);document.getElementById('form-status').textContent=valid?'Preview complete. No inquiry was sent.':'Please review the highlighted fields. No inquiry was sent.';if(!valid)document.getElementById(fields.find(name=>document.getElementById(name).getAttribute('aria-invalid')==='true')).focus()});
+  </script>
+</body>
+</html>
