@@ -7,8 +7,9 @@ export function HeaderActions({ currentPath = '' }: { currentPath?: string }) {
 
   return (
     <Button asChild variant="default">
-      <a href={quote.path} aria-current={current ? 'page' : undefined}>
-        {quote.label}
+      <a href={quote.path} aria-label={quote.label} aria-current={current ? 'page' : undefined}>
+        <span className="hidden lg:inline">{quote.label}</span>
+        <span className="lg:hidden">Quote</span>
       </a>
     </Button>
   )
