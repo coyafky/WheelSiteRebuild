@@ -36,7 +36,7 @@ export function PrimaryHeader({ currentPath = '', blogEnabled = false, productsO
 
   return (
     <div className="mx-auto flex min-h-[4.5rem] w-full max-w-[1500px] items-center gap-2 px-5 text-sm font-semibold sm:gap-4 sm:px-8 lg:gap-8 lg:px-10">
-      <DestinationLink href={home.path} label="Brand preview" currentPath={currentPath} />
+      <DestinationLink href={home.path} label="Brand preview" currentPath={currentPath} className="min-w-0 flex-1 truncate lg:flex-none" />
       <nav aria-label="Primary" className="hidden flex-1 items-center gap-6 lg:flex">
         {routes.map((route) => (
           route.id === 'products' ? (
@@ -79,10 +79,12 @@ function DestinationLink({
   href,
   label,
   currentPath,
+  className = '',
 }: {
   href: string
   label: string
   currentPath: string
+  className?: string
 }) {
   const state = destinationState(href, currentPath)
 
@@ -90,7 +92,7 @@ function DestinationLink({
     <a
       href={href}
       aria-current={state === 'page' ? 'page' : undefined}
-      className={state ? `${linkFocus} border-b-2 border-brand-accent` : linkFocus}
+      className={`${linkFocus} ${className} ${state ? 'border-b-2 border-brand-accent' : ''}`.trim()}
     >
       {label}
       {state === 'section' ? <span className="sr-only"> current section</span> : null}

@@ -7,7 +7,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
     <>
       <SiteHeader />
       {children}
-      <SiteFooter />
+      <SiteFooter renderMode="preview" />
     </>
   )
 }

@@ -21,7 +21,7 @@ const groups = [
 
 export function FooterLinkGroups({ blogEnabled = false, contactMethods = [] }: { blogEnabled?: boolean; contactMethods?: readonly ContactMethod[] }) {
   return (
-    <nav aria-label="Footer links" className="mx-auto grid w-full max-w-[1500px] gap-10 px-5 py-14 sm:grid-cols-2 sm:px-8 lg:grid-cols-3 lg:px-10">
+    <nav aria-label="Footer links" className="mx-auto grid w-full max-w-[1500px] gap-10 px-5 pb-14 pt-10 sm:grid-cols-2 sm:px-8 lg:grid-cols-[repeat(auto-fit,minmax(180px,1fr))] lg:px-10">
       {groups.map((group) => {
         const routeIds: NavigationRouteId[] = [...group.routeIds]
         if (group.id === 'company' && blogEnabled) routeIds.push('blog')

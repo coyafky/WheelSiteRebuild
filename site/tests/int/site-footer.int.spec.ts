@@ -1,4 +1,5 @@
 import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
 import { cleanup, render, screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { SiteFooter } from '@/components/site-footer/site-footer'
@@ -8,6 +9,36 @@ afterEach(() => {
 })
 
 describe('site footer inquiry close', () => {
+  it('emits the inquiry and navigation destinations as server-rendered anchors', () => {
+    const html = renderToStaticMarkup(createElement(SiteFooter))
+    const document = new DOMParser().parseFromString(html, 'text/html')
+    const hrefs = [...document.querySelectorAll('footer a[href]')].map((anchor) => anchor.getAttribute('href'))
+
+    expect(hrefs).toContain('/request-quote')
+    expect(hrefs).toContain('/products/wheels')
+    expect(hrefs).toContain('/capabilities/safety-tires')
+    expect(hrefs).toContain('/contact')
+    expect(hrefs.every((href) => href && href !== '#' && (href === '/' || !href.endsWith('/')))).toBe(true)
+  })
+
+  it('labels a draft brand block in preview and omits it from unapproved public output', () => {
+    const { rerender } = render(createElement(SiteFooter, { renderMode: 'preview' }))
+    const footer = screen.getByRole('contentinfo')
+    const brand = screen.getByText('Brand preview · pending approval')
+    const links = screen.getByRole('navigation', { name: 'Footer links' })
+    expect(footer.contains(brand)).toBe(true)
+    expect(brand.compareDocumentPosition(links) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+
+    rerender(createElement(SiteFooter, { renderMode: 'preview', brand: {
+      name: 'Unapproved Example', evidenceRef: '', approvedForPublic: false,
+    } }))
+    expect(screen.getByText('Brand preview · pending approval')).toBeTruthy()
+    expect(screen.queryByText('Unapproved Example')).toBeNull()
+
+    rerender(createElement(SiteFooter, { renderMode: 'public' }))
+    expect(screen.queryByText('Brand preview · pending approval')).toBeNull()
+  })
+
   it('shows the approved product, Engineering, and Company destinations as expanded groups', () => {
     render(createElement(SiteFooter))
     const footerLinks = screen.getByRole('navigation', { name: 'Footer links' })
