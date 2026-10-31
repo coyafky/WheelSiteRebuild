@@ -122,10 +122,20 @@ describe('sticky primary header', () => {
     expect(within(header).getByRole('link', { name: 'Request a Quote' }).getAttribute('data-variant')).toBe('default')
   })
 
-  it('imports scroll padding so in-page anchors clear the bar', async () => {
-    const raw = await import('@/components/site-header/header.css?raw')
-    const inline = await import('@/components/site-header/header.css?inline')
+  it('imports scroll padding so in-page anchors clear the bar', () => {
+    render(createElement(SiteHeader, { currentPath: '/unlisted' }))
 
-    expect({ raw, inline, head: document.head.innerHTML }).toEqual({ probe: true })
+    const fromTags = [...document.querySelectorAll('style')]
+      .map((style) => style.textContent ?? '')
+      .join('\n')
+    const fromSheets = [...document.styleSheets].flatMap((sheet) => {
+      try {
+        return [...sheet.cssRules].map((rule) => rule.cssText)
+      } catch {
+        return []
+      }
+    })
+
+    expect(`${fromTags}\n${fromSheets.join('\n')}`).toContain('scroll-padding-top: 4.5rem')
   })
 })
