@@ -5,7 +5,7 @@ const productRouteIds = ['wheels', 'ev-housings', 'custom-aluminum', 'safety-tir
 export function ProductsMegaMenu({ open }: { open: boolean }) {
   if (!open) return null
 
-  const products = listNavigationRoutes(productRouteIds)
+  const products = listNavigationRoutes(productRouteIds, { includeUnpublished: true })
   const overview = getNavigationRoute('products')
 
   return (

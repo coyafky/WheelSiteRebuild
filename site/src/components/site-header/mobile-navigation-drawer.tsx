@@ -16,8 +16,8 @@ export function MobileNavigationDrawer({ currentPath, blogEnabled, onClose, onNa
   const [engineeringOpen, setEngineeringOpen] = useState(false)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const dialogRef = useRef<HTMLDivElement>(null)
-  const products = listNavigationRoutes(productIds)
-  const capabilities = listNavigationRoutes(capabilityIds)
+  const products = listNavigationRoutes(productIds, { includeUnpublished: true })
+  const capabilities = listNavigationRoutes(capabilityIds, { includeUnpublished: true })
   const remainingIds: NavigationRouteId[] = ['how-we-work', ...(blogEnabled ? ['blog' as const] : []), 'about', 'contact']
 
   useEffect(() => {

@@ -53,7 +53,7 @@ describe('navigation route registry', () => {
     ])
   })
 
-  it('keeps blog, privacy, and terms unpublished and ships no contact methods or certifications', () => {
+  it('keeps every preview destination unpublished and ships no contact methods or certifications', () => {
     expect(publicationFlags).toEqual({
       blog: false,
       privacyPolicy: false,
@@ -62,25 +62,25 @@ describe('navigation route registry', () => {
     expect(getNavigationRoute('blog').published).toBe(false)
     expect(getNavigationRoute('privacy-policy').published).toBe(false)
     expect(getNavigationRoute('terms-of-use').published).toBe(false)
-    expect(getNavigationRoute('home').published).toBe(true)
-    expect(getNavigationRoute('products').published).toBe(true)
-    expect(getNavigationRoute('wheels').published).toBe(true)
-    expect(getNavigationRoute('ev-housings').published).toBe(true)
-    expect(getNavigationRoute('custom-aluminum').published).toBe(true)
-    expect(getNavigationRoute('safety-tires').published).toBe(true)
-    expect(getNavigationRoute('engineering').published).toBe(true)
-    expect(getNavigationRoute('wheel-engineering').published).toBe(true)
-    expect(getNavigationRoute('safety-tire-capabilities').published).toBe(true)
-    expect(getNavigationRoute('how-we-work').published).toBe(true)
-    expect(getNavigationRoute('about').published).toBe(true)
-    expect(getNavigationRoute('manufacturing').published).toBe(true)
-    expect(getNavigationRoute('contact').published).toBe(true)
-    expect(getNavigationRoute('request-quote').published).toBe(true)
+    expect(getNavigationRoute('home').published).toBe(false)
+    expect(getNavigationRoute('products').published).toBe(false)
+    expect(getNavigationRoute('wheels').published).toBe(false)
+    expect(getNavigationRoute('ev-housings').published).toBe(false)
+    expect(getNavigationRoute('custom-aluminum').published).toBe(false)
+    expect(getNavigationRoute('safety-tires').published).toBe(false)
+    expect(getNavigationRoute('engineering').published).toBe(false)
+    expect(getNavigationRoute('wheel-engineering').published).toBe(false)
+    expect(getNavigationRoute('safety-tire-capabilities').published).toBe(false)
+    expect(getNavigationRoute('how-we-work').published).toBe(false)
+    expect(getNavigationRoute('about').published).toBe(false)
+    expect(getNavigationRoute('manufacturing').published).toBe(false)
+    expect(getNavigationRoute('contact').published).toBe(false)
+    expect(getNavigationRoute('request-quote').published).toBe(false)
     expect(contactMethods).toEqual([])
     expect(certifications).toEqual([])
   })
 
-  it('omits unpublished optional destinations instead of linking a placeholder', () => {
+  it('lists only published destinations unless a preview asks for known unpublished routes', () => {
     expect(
       listNavigationRoutes([
         'contact',
@@ -91,14 +91,15 @@ describe('navigation route registry', () => {
         'terms-of-use',
         'not-verified',
       ]).map((route) => route.path),
-    ).toEqual(['/contact', '/how-we-work', '/about'])
+    ).toEqual([])
+    expect(listNavigationRoutes(['products', 'wheels', 'not-verified'], { includeUnpublished: true }).map((route) => route.path)).toEqual(['/products', '/products/wheels'])
   })
 
   it('fails when a core route id is missing or invalid', () => {
     expect(requireNavigationRoute('manufacturing')).toMatchObject({
       id: 'manufacturing',
       path: '/about/manufacturing',
-      published: true,
+      published: false,
     })
     expect(requireNavigationRoute('blog')).toMatchObject({
       id: 'blog',
