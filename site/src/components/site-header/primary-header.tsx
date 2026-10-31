@@ -27,7 +27,7 @@ export function PrimaryHeader({ currentPath = '', blogEnabled = false }: Primary
   }
 
   return (
-    <div className="mx-auto flex min-h-[4.5rem] w-full max-w-[1500px] items-center gap-8 px-5 sm:px-8 lg:px-10">
+    <div className="mx-auto flex min-h-[4.5rem] w-full max-w-[1500px] items-center gap-8 px-5 text-sm font-semibold sm:px-8 lg:px-10">
       <DestinationLink href={home.path} label="Brand preview" currentPath={currentPath} />
       <nav aria-label="Primary" className="flex flex-1 items-center gap-6">
         {routes.map((route) => (
