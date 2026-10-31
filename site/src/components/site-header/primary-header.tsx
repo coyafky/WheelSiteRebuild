@@ -1,4 +1,4 @@
-import { getNavigationRoute, type NavigationRouteId } from '@/navigation/route-registry'
+import { getNavigationRoute, type NavigationRoute, type NavigationRouteId } from '@/navigation/route-registry'
 import { HeaderActions } from '@/components/site-header/header-actions'
 
 const primaryRouteIds = [
@@ -19,7 +19,7 @@ type PrimaryHeaderProps = {
 
 export function PrimaryHeader({ currentPath = '', blogEnabled = false }: PrimaryHeaderProps) {
   const home = getNavigationRoute('home')
-  const routes = primaryRouteIds.map((id) => getNavigationRoute(id))
+  const routes: NavigationRoute[] = primaryRouteIds.map((id) => getNavigationRoute(id))
 
   if (blogEnabled) {
     const howWeWork = routes.findIndex((route) => route.id === 'how-we-work')

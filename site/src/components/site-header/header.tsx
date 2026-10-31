@@ -11,7 +11,7 @@ export type SiteHeaderProps = {
   blogEnabled?: boolean
 }
 
-export function SiteHeader({ currentPath, blogEnabled = false }: SiteHeaderProps = {}) {
+export function SiteHeader({ currentPath, blogEnabled = false }: SiteHeaderProps) {
   const pathname = usePathname()
   const path = currentPath ?? pathname ?? ''
 
