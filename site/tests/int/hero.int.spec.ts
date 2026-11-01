@@ -186,3 +186,121 @@ describe('home hero adoption', () => {
     }
   })
 })
+
+describe('hero media slot has no escape hatch', () => {
+  it('refuses arbitrary nodes in the media slot', () => {
+    /* Type-level rejection is the first line of defence; this asserts the
+       runtime guard also refuses a caller that bypasses the types. */
+    const bypass = createElement('img', { src: '/unverified.jpg', alt: '' }) as unknown as never
+
+    expect(() => renderToStaticMarkup(createElement(Hero, { ...pageCopy, media: bypass }))).toThrow(
+      /media/i,
+    )
+  })
+
+  it('refuses an image whose dimensions are missing, zero, or negative', () => {
+    for (const dims of [
+      { url: '/x.jpg', alt: 'a' },
+      { url: '/x.jpg', alt: 'a', width: 0, height: 0 },
+      { url: '/x.jpg', alt: 'a', width: -10, height: -20 },
+    ]) {
+      expect(() =>
+        renderToStaticMarkup(createElement(Hero, { ...pageCopy, media: dims as never })),
+      ).toThrow(/media/i)
+    }
+  })
+
+  it('refuses an image with no usable alt text', () => {
+    expect(() =>
+      renderToStaticMarkup(
+        createElement(Hero, {
+          ...pageCopy,
+          media: { url: '/x.jpg', alt: '', width: 100, height: 50 },
+        }),
+      ),
+    ).toThrow(/alt/i)
+  })
+
+  it('refuses a pending slot with a blank label', () => {
+    expect(() =>
+      renderToStaticMarkup(
+        createElement(Hero, { ...pageCopy, media: { pending: true, label: '   ' } }),
+      ),
+    ).toThrow(/label/i)
+  })
+
+  it('pins the media box to the source ratio instead of letting the image size the box', () => {
+    const { container } = render(
+      createElement(Hero, {
+        ...pageCopy,
+        media: { url: '/x.jpg', alt: 'a', width: 1600, height: 900 },
+      }),
+    )
+
+    const box = container.querySelector('[data-media-box]') as HTMLElement
+    expect(box.style.aspectRatio).toBe('1600 / 900')
+    expect(box.className).toContain('overflow-hidden')
+  })
+})
+
+describe('hero action labels are usable', () => {
+  it('refuses a blank label on a route action', () => {
+    expect(() =>
+      renderToStaticMarkup(
+        createElement(Hero, {
+          ...pageCopy,
+          primaryAction: { label: '   ', routeId: 'request-quote' },
+        }),
+      ),
+    ).toThrow(/label/i)
+  })
+
+  it('falls back to the registry label only when no label is supplied', () => {
+    const { container } = render(
+      createElement(Hero, {
+        ...pageCopy,
+        primaryAction: { routeId: 'request-quote' } as never,
+      }),
+    )
+
+    expect(container.querySelector('a[href="/request-quote"]')?.textContent).toBe('Request a Quote')
+  })
+})
+
+describe('hero has one addressable heading', () => {
+  it('derives the heading id from a caller-supplied slug', () => {
+    const { container } = render(
+      createElement(Hero, { ...pageCopy, headingId: 'home-hero' }),
+    )
+
+    expect(container.querySelector('h1')?.id).toBe('home-hero')
+    expect(container.querySelector('section')?.getAttribute('aria-labelledby')).toBe('home-hero')
+  })
+
+  it('gives two heroes on the same document distinct heading ids', () => {
+    const { container } = render(
+      createElement('div', null, [
+        createElement(Hero, { ...pageCopy, key: 'a' }),
+        createElement(Hero, { ...pageCopy, key: 'b' }),
+      ]),
+    )
+
+    const ids = [...container.querySelectorAll('h1')].map((h1) => h1.id)
+    expect(ids).toHaveLength(2)
+    expect(new Set(ids).size).toBe(2)
+    expect(ids.every((id) => id.length > 0)).toBe(true)
+
+    const labelledBy = [...container.querySelectorAll('section')].map((s) =>
+      s.getAttribute('aria-labelledby'),
+    )
+    expect(new Set(labelledBy).size).toBe(2)
+  })
+
+  it('rejects a heading id that cannot be used as a fragment reference', () => {
+    expect(() =>
+      renderToStaticMarkup(
+        createElement(Hero, { ...pageCopy, headingId: 'not a slug!' }),
+      ),
+    ).toThrow(/heading/i)
+  })
+})

@@ -135,6 +135,7 @@ export function HomeView({ platforms, wheelPaths }: HomeViewProps) {
             <Hero
               pageType="home"
               embedded
+              headingId="home-hero"
               title="Four platforms. Two ways to work."
               description="Explore Wheels, EV Housings, Custom Aluminum and Safety Tires. Start with a defined sourcing requirement or a custom development brief."
               primaryAction={{ label: 'Explore platforms', anchor: '#platforms' }}
