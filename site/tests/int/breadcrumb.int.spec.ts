@@ -145,4 +145,42 @@ describe('visible breadcrumbs', () => {
     ).toBe('')
     expect(container.querySelector('script[type="application/ld+json"]')).toBeNull()
   })
+
+  it.each([
+    ['/about', ['Home', 'About'], ['/']],
+    ['/about/manufacturing', ['Home', 'About', 'Manufacturing'], ['/', '/about']],
+    ['/how-we-work', ['Home', 'How We Work'], ['/']],
+    ['/contact', ['Home', 'Contact'], ['/']],
+    ['/request-quote', ['Home', 'Request a Quote'], ['/']],
+    ['/privacy-policy', ['Home', 'Privacy Policy'], ['/']],
+  ])('shows the company or top-level ancestry for %s', async (path, labels, parentPaths) => {
+    const container = document.createElement('div')
+    container.innerHTML = await pageHtml(path)
+    const items = [...container.querySelectorAll('nav[aria-label="Breadcrumb"] li')]
+
+    expect(items.map((item) => item.textContent?.replace('/', '').trim())).toEqual(labels)
+    expect(items.slice(0, -1).map((item) => item.querySelector('a')?.getAttribute('href'))).toEqual(
+      parentPaths,
+    )
+    expect(items.at(-1)?.querySelector('[aria-current="page"]')?.textContent).toBe(labels.at(-1))
+    expect(items.at(-1)?.querySelector('a')).toBeNull()
+    const route = resolvePreviewRoute(path.slice(1).split('/'))
+    if (!route) throw new Error(`Missing route: ${path}`)
+    expect(
+      renderToStaticMarkup(createElement(SiteBreadcrumb, { currentId: route.id, mode: 'public' })),
+    ).toBe('')
+    expect(container.querySelector('script[type="application/ld+json"]')).toBeNull()
+  })
+
+  it('keeps Terms of Use as a preview-only top-level legal trail', () => {
+    const html = renderToStaticMarkup(createElement(SiteBreadcrumb, { currentId: 'terms-of-use' }))
+    expect(html).toMatch(/<a[^>]*href="\/"[^>]*>Home<\/a>/)
+    expect(html).toMatch(/<span[^>]*aria-current="page"[^>]*>Terms of Use<\/span>/)
+    expect(
+      renderToStaticMarkup(
+        createElement(SiteBreadcrumb, { currentId: 'terms-of-use', mode: 'public' }),
+      ),
+    ).toBe('')
+    expect(html).not.toContain('application/ld+json')
+  })
 })
