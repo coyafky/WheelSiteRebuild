@@ -124,27 +124,9 @@ export function HomeView({ platforms, wheelPaths }: HomeViewProps) {
       >
         Skip to content
       </a>
-      <header className="sticky top-0 z-40 border-b border-border bg-card/95 backdrop-blur-sm">
-        <div className={`${container} flex min-h-20 items-center justify-between gap-4`}>
-          <Link href="/" aria-current="page" className="flex min-w-0 items-center gap-3 rounded-sm font-semibold text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">
-            <span className="size-3 shrink-0 bg-brand-accent" aria-hidden="true" />
-            <span className="truncate">WheelSite <span className="font-normal text-muted-foreground">/ working title</span></span>
-          </Link>
-          <nav className="hidden items-center gap-8 text-sm font-semibold text-foreground lg:flex" aria-label="Home preview sections">
-            <a className="hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" href="#platforms">Platforms</a>
-            <a className="hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" href="#wheel-paths">Wheels paths</a>
-            <a className="hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" href="#evidence">Evidence</a>
-            <a className="hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" href="#work-paths">Ways to work</a>
-          </nav>
-          <span className="shrink-0 rounded-full border border-border px-3 py-2 text-xs font-semibold text-muted-foreground">
-            Internal preview
-          </span>
-        </div>
-      </header>
-
       <main id="main">
         <section className="overflow-hidden bg-background" aria-labelledby="home-title">
-          <div className={`${container} flex min-h-[calc(100svh-5rem)] flex-col justify-between gap-6 py-6 sm:py-8 lg:gap-8 lg:py-12`}>
+          <div className={`${container} flex min-h-[calc(100svh-4.5rem)] flex-col justify-between gap-6 py-6 sm:py-8 lg:gap-8 lg:py-12`}>
             <div className="flex items-center justify-between gap-4 border-b border-border pb-4 text-xs font-semibold tracking-[0.14em] text-muted-foreground uppercase">
               <span className="sm:hidden">Products / sourcing / development</span>
               <span className="hidden sm:inline">Automotive components / sourcing and development</span>
@@ -281,20 +263,6 @@ export function HomeView({ platforms, wheelPaths }: HomeViewProps) {
         </section>
       </main>
 
-      <footer className="bg-surface-dark text-card" aria-label="Site preview footer">
-        <div className={`${container} py-16 sm:py-20 lg:py-24`}>
-          <p className="mb-5 text-xs font-semibold tracking-[0.12em] text-card/75 uppercase">Inquiry path · preview</p>
-          <h2 className="mb-5 max-w-[760px] text-[30px] leading-9 font-[650] tracking-[-0.025em] lg:text-[40px] lg:leading-[44px]">
-            Have a sourcing or development brief in mind?
-          </h2>
-          <p className="max-w-[60ch] text-base leading-6 text-card/80">
-            A single inquiry route will serve both paths after its privacy notice and submission flow are ready. No information is collected on this preview page.
-          </p>
-          <div className="mt-16 border-t border-card/20 pt-6 text-sm text-card/70">
-            Internal implementation preview · public content and brand assets pending approval
-          </div>
-        </div>
-      </footer>
     </>
   )
 }

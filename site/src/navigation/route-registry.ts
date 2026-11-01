@@ -74,7 +74,7 @@ const coreRouteIds = [
   'request-quote',
 ] as const satisfies readonly NavigationRouteId[]
 
-function isCanonicalPath(path: string): boolean {
+export function isCanonicalPath(path: string): boolean {
   if (path === '/') return true
   if (!path.startsWith('/') || path.endsWith('/')) return false
   return !path.includes('#') && !path.includes('?') && !/\s/.test(path)

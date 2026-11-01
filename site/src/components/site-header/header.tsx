@@ -15,51 +15,86 @@ export type SiteHeaderProps = {
 export function SiteHeader({ currentPath, blogEnabled = false }: SiteHeaderProps) {
   const pathname = usePathname()
   const path = currentPath ?? pathname ?? ''
+
+  return <HeaderContents currentPath={path} blogEnabled={blogEnabled} />
+}
+
+function HeaderContents({ currentPath, blogEnabled }: { currentPath: string; blogEnabled: boolean }) {
   const [productsOpen, setProductsOpen] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const productsButtonRef = useRef<HTMLButtonElement>(null)
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
   const headerRef = useRef<HTMLElement>(null)
-  const disclosureRef = useRef<HTMLButtonElement>(null)
-  const lastPathRef = useRef(path)
+  const lastPathRef = useRef(currentPath)
 
   useEffect(() => {
-    if (lastPathRef.current === path) return
-    lastPathRef.current = path
+    if (lastPathRef.current === currentPath) return
+    lastPathRef.current = currentPath
     setProductsOpen(false)
-  }, [path])
+    setMobileOpen(false)
+  }, [currentPath])
 
   useEffect(() => {
     if (!productsOpen) return
 
-    function closeFromEscape(event: KeyboardEvent) {
+    const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return
       setProductsOpen(false)
-      disclosureRef.current?.focus()
+      productsButtonRef.current?.focus()
+    }
+    const closeOnOutsidePointer = (event: PointerEvent) => {
+      if (!headerRef.current?.contains(event.target as Node)) setProductsOpen(false)
+    }
+    const closeOnNarrowLayout = () => {
+      if (window.innerWidth < 1024) setProductsOpen(false)
     }
 
-    function closeFromPointerDown(event: PointerEvent) {
-      const header = headerRef.current
-      if (!header || !(event.target instanceof Node) || header.contains(event.target)) return
-      setProductsOpen(false)
-    }
-
-    document.addEventListener('keydown', closeFromEscape)
-    document.addEventListener('pointerdown', closeFromPointerDown)
+    document.addEventListener('keydown', closeOnEscape)
+    document.addEventListener('pointerdown', closeOnOutsidePointer)
+    window.addEventListener('resize', closeOnNarrowLayout)
     return () => {
-      document.removeEventListener('keydown', closeFromEscape)
-      document.removeEventListener('pointerdown', closeFromPointerDown)
+      document.removeEventListener('keydown', closeOnEscape)
+      document.removeEventListener('pointerdown', closeOnOutsidePointer)
+      window.removeEventListener('resize', closeOnNarrowLayout)
     }
   }, [productsOpen])
+
+  useEffect(() => {
+    if (!mobileOpen) return
+    const closeOnDesktopLayout = () => {
+      if (window.innerWidth >= 1024) setMobileOpen(false)
+    }
+    window.addEventListener('resize', closeOnDesktopLayout)
+    return () => window.removeEventListener('resize', closeOnDesktopLayout)
+  }, [mobileOpen])
 
   return (
     <header ref={headerRef} className="sticky top-0 z-40 bg-card text-foreground">
       <PrimaryHeader
-        currentPath={path}
+        currentPath={currentPath}
         blogEnabled={blogEnabled}
         productsOpen={productsOpen}
-        productsDisclosureRef={disclosureRef}
-        onToggleProducts={() => setProductsOpen((open) => !open)}
+        productsButtonRef={productsButtonRef}
+        onProductsToggle={() => setProductsOpen((open) => !open)}
+        mobileOpen={mobileOpen}
+        menuButtonRef={menuButtonRef}
+        onMobileToggle={() => {
+          setProductsOpen(false)
+          setMobileOpen((open) => !open)
+        }}
       />
       <ProductsMegaMenu open={productsOpen} />
-      <MobileNavigationDrawer />
+      {mobileOpen ? (
+        <MobileNavigationDrawer
+          currentPath={currentPath}
+          blogEnabled={blogEnabled}
+          onClose={() => {
+            setMobileOpen(false)
+            menuButtonRef.current?.focus()
+          }}
+          onNavigate={() => setMobileOpen(false)}
+        />
+      ) : null}
     </header>
   )
 }

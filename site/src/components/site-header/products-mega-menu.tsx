@@ -2,43 +2,42 @@ import { getNavigationRoute, listNavigationRoutes } from '@/navigation/route-reg
 
 export const productsMegaMenuId = 'products-mega-menu'
 
-const platformIds = ['wheels', 'ev-housings', 'custom-aluminum', 'safety-tires'] as const
+const productRouteIds = ['wheels', 'ev-housings', 'custom-aluminum', 'safety-tires'] as const
 
 const linkFocus =
-  'rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring'
+  'rounded-sm text-sm font-semibold hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring'
 
-type ProductsMegaMenuProps = {
-  open?: boolean
-}
-
-export function ProductsMegaMenu({ open = false }: ProductsMegaMenuProps) {
-  const platforms = listNavigationRoutes(platformIds)
-  const products = getNavigationRoute('products')
+export function ProductsMegaMenu({ open }: { open: boolean }) {
+  const products = listNavigationRoutes(productRouteIds)
+  const overview = getNavigationRoute('products')
 
   return (
-    <div
+    <nav
       id={productsMegaMenuId}
+      aria-label="Product platforms"
       hidden={!open}
-      className="mx-auto w-full max-w-[1500px] px-5 sm:px-8 lg:px-10"
+      className="absolute inset-x-0 top-full hidden border-t border-border bg-card shadow-lg lg:block"
     >
-      {open ? (
-        <nav aria-label="Product platforms">
-          <ul className="grid grid-cols-2 gap-x-8 gap-y-3 py-4">
-            {platforms.map((route) => (
+      <div className="mx-auto w-full max-w-[1500px] px-10 py-8">
+        <h2 className="mb-5 text-lg font-semibold">Product platforms</h2>
+        {open ? (
+          <ul className="grid max-w-[720px] grid-cols-2 gap-x-10 gap-y-5">
+            {products.map((route) => (
               <li key={route.id}>
-                <a href={route.path} className={linkFocus}>
+                <a className={linkFocus} href={route.path}>
                   {route.label}
                 </a>
               </li>
             ))}
-            <li>
-              <a href={products.path} className={linkFocus}>
-                View All Products
-              </a>
-            </li>
           </ul>
-        </nav>
-      ) : null}
-    </div>
+        ) : null}
+        <a
+          className="mt-7 inline-block rounded-sm text-sm font-semibold underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          href={overview.path}
+        >
+          View All Products
+        </a>
+      </div>
+    </nav>
   )
 }

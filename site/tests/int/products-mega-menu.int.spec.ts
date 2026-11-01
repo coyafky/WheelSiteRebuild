@@ -13,7 +13,7 @@ describe('products mega menu', () => {
 
     const banner = screen.getByRole('banner')
     const products = within(banner).getByRole('link', { name: 'Products' })
-    const disclosure = within(banner).getByRole('button', { name: 'Show product platforms' })
+    const disclosure = within(banner).getByRole('button', { name: 'Show products' })
     const panelId = disclosure.getAttribute('aria-controls')
     const panel = panelId ? document.getElementById(panelId) : null
 
@@ -36,7 +36,7 @@ describe('products mega menu', () => {
   it('opens the registered product platforms without changing the URL', () => {
     render(createElement(SiteHeader, { currentPath: '/unlisted' }))
 
-    const disclosure = screen.getByRole('button', { name: 'Show product platforms' })
+    const disclosure = screen.getByRole('button', { name: 'Show products' })
     const url = window.location.href
 
     fireEvent.click(disclosure)
@@ -67,7 +67,7 @@ describe('products mega menu', () => {
 
   it('opens from Enter or Space on the disclosure', () => {
     const openWith = (key: string) => {
-      const disclosure = screen.getByRole('button', { name: 'Show product platforms' })
+      const disclosure = screen.getByRole('button', { name: 'Show products' })
       const url = window.location.href
 
       disclosure.focus()
@@ -88,7 +88,7 @@ describe('products mega menu', () => {
   it('keeps the platforms closed when the disclosure is hovered or given an arrow key', () => {
     render(createElement(SiteHeader, { currentPath: '/unlisted' }))
 
-    const disclosure = screen.getByRole('button', { name: 'Show product platforms' })
+    const disclosure = screen.getByRole('button', { name: 'Show products' })
 
     fireEvent.mouseEnter(disclosure)
     fireEvent.keyDown(disclosure, { key: 'ArrowDown' })
@@ -101,7 +101,7 @@ describe('products mega menu', () => {
   it('returns focus to the disclosure when Escape closes the platforms', () => {
     render(createElement(SiteHeader, { currentPath: '/unlisted' }))
 
-    const disclosure = screen.getByRole('button', { name: 'Show product platforms' })
+    const disclosure = screen.getByRole('button', { name: 'Show products' })
 
     fireEvent.click(disclosure)
     disclosure.blur()
@@ -115,7 +115,7 @@ describe('products mega menu', () => {
   it('closes the platforms on a pointer down outside the header', () => {
     render(createElement(SiteHeader, { currentPath: '/unlisted' }))
 
-    const disclosure = screen.getByRole('button', { name: 'Show product platforms' })
+    const disclosure = screen.getByRole('button', { name: 'Show products' })
     const header = disclosure.closest('header')
 
     fireEvent.click(disclosure)
@@ -132,7 +132,7 @@ describe('products mega menu', () => {
 
   it('closes the platforms when the current path changes', () => {
     const { rerender } = render(createElement(SiteHeader, { currentPath: '/unlisted' }))
-    const disclosure = screen.getByRole('button', { name: 'Show product platforms' })
+    const disclosure = screen.getByRole('button', { name: 'Show products' })
 
     fireEvent.click(disclosure)
     rerender(createElement(SiteHeader, { currentPath: '/unlisted' }))
