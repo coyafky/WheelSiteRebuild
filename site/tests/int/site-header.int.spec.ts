@@ -246,6 +246,17 @@ describe('sticky primary header', () => {
     expect(within(header).getByRole('link', { name: 'Request a Quote' }).getAttribute('data-variant')).toBe('default')
   })
 
+  it('renders the quote action text exactly once across breakpoints', () => {
+    render(createElement(SiteHeader, { currentPath: '/unlisted' }))
+
+    const header = screen.getByRole('banner')
+    const quote = within(header).getByRole('link', { name: 'Request a Quote' })
+
+    // 两个响应式 span（hidden lg:inline / lg:hidden）会让 textContent 拼成
+    // "Request a QuoteQuote"。aria-label 掩盖了它，所以要直接断可见文本。
+    expect(quote.textContent).toBe('Request a Quote')
+  })
+
   it('imports scroll padding so in-page anchors clear the bar', () => {
     render(createElement(SiteHeader, { currentPath: '/unlisted' }))
 
