@@ -79,19 +79,21 @@ main (30d2b32)
 
 ## 三、远程同步状态
 
-远程只有两个分支。**五条本地分支从未推送。**
+**七条分支全部在远程。** 盘点开始时远程只有 `main` 与 `feat/global-header-footer`，其余五条从未推送；本次已全部推上。
 
 | 分支 | 本地 HEAD | 远程 | 领先 main | 状态 |
 | --- | --- | --- | --- | --- |
 | `main` | `30d2b32` | `30d2b32` | 0 | ✅ 同步 |
 | `feat/global-header-footer` | `60bdb15` | `60bdb15` | 13 | ✅ 同步 |
-| `feat/header-03-products-mega-menu` | `5e209d9` | — | 11 | ⬜ 未推送 |
-| `feat/footer-02-link-groups` | `b87468b` | — | 12 | ⬜ 未推送 |
-| `feat/global-hero` | `f09bffb` | — | 15 | ⬜ 未推送 |
-| `feat/breadcrumb-01-preview-route-placeholders` | `8496ace` | — | 16 | ⬜ 未推送 |
-| `feat/global-breadcrumb` | `ef6fc5b` | — | 24 | ⬜ 未推送 |
+| `feat/header-03-products-mega-menu` | `5e209d9` | `5e209d9` | 11 | ✅ 已推送（但落后集成分支两提交，见第五节） |
+| `feat/footer-02-link-groups` | `b87468b` | `b87468b` | 12 | ✅ 已推送 |
+| `feat/global-hero` | `d5848da` | `d5848da` | 16 | ✅ 已推送（含本次文档提交） |
+| `feat/breadcrumb-01-preview-route-placeholders` | `8496ace` | `8496ace` | 16 | ✅ 已推送 |
+| `feat/global-breadcrumb` | `ef6fc5b` | `ef6fc5b` | 24 | ✅ 已推送 |
 
-`git push --dry-run origin feat/global-hero` 已实测通过，凭证与连通性正常。**未推送是因为没人推，不是推不上去。**
+`git push --dry-run` 与真实推送均实测通过，凭证与连通性正常。仓库地址：`https://github.com/coyafky/WheelSiteRebuild.git`。
+
+⚠️ **推送不等于合入。** 七条分支各自独立，`main` 仍是骨架；完整站点需要人工作合并决策（见第六节第 5 条）。
 
 ## 四、Agent 归属证据
 
