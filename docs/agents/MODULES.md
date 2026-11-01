@@ -6,14 +6,14 @@
 
 ## 一、代码分层
 
-应用根目录 `site/`。`main` 上是骨架，具体模块由各 feature 分支引入。
+应用根目录 `site/`。下表「`main` 上」一列记录的是**盘点时**（`30d2b32`）的状态；`main` 已于本轮快进到 `71534f0`，现在含共享 Header / Footer / 路由登记表，详见第三节。
 
 | 层 | 路径 | 职责 | 在 `main` 上 |
 | --- | --- | --- | --- |
 | 页面路由 | `site/src/app/(frontend)/` | App Router 页面与布局 | 只有 `layout.tsx`、`page.tsx` |
 | 后台路由 | `site/src/app/(payload)/` | Payload 管理后台与 API | ✅ 完整 |
-| 组件 | `site/src/components/` | 见下节分层 | 只有 `home`、`ui` |
-| 导航登记 | `site/src/navigation/` | 路由登记 127 行、预览路由 39、面包屑链 49、文章链 31，共 4 文件 246 行 | ❌ 整个目录不存在 |
+| 组件 | `site/src/components/` | 见下节分层 | 盘点时只有 `home`、`ui`；现已含 `site-chrome`、`site-header`、`site-footer` |
+| 导航登记 | `site/src/navigation/` | `route-registry.ts` 119 行（`main` 已有）；预览路由 39、面包屑链 49、文章链 31 仍只在 breadcrumb 分支 | ✅ `route-registry.ts` 已入 `main` |
 | 内容模型 | `site/src/content/` | `home-model.ts` 首页平台模型 + `mock-blog-articles.ts` 模拟文章 | 只有 `home-model.ts` |
 | 数据集合 | `site/src/collections/` | `Users`、`Media`、`ProductPlatforms` | ✅ 三个都在 |
 | 数据读取 | `site/src/lib/` | `get-home-platforms.ts`、`utils.ts` | ✅ |
@@ -22,7 +22,7 @@
 
 ### 组件分层
 
-`feat/global-hero` 与 `feat/global-breadcrumb` **各 22 个组件文件、各 6 个子目录，但内容不同** —— 两条分支各带一半新模块，互不含对方：
+以下是 `feat/global-hero` 与 `feat/global-breadcrumb` 两条分支的对比。**各 22 个组件文件、各 6 个子目录，但内容不同** —— 两条分支各带一半新模块，互不含对方：
 
 | 子目录 | 文件数 | 内容 | hero 分支 | breadcrumb 分支 |
 | --- | --- | --- | --- | --- |
@@ -34,11 +34,11 @@
 | `site-breadcrumb/` | 1 | `site-breadcrumb.tsx`，76 行 | ❌ 没有此目录 | ✅ |
 | `ui/` | 5 | shadcn/Radix 基础件：button、card、input、label、textarea | ✅ | ✅ |
 
-**这是本次盘点最重要的一条结论**：要合成完整站点，`feat/global-hero` 与 `feat/global-breadcrumb` **必须互合**，而两者都改过 `home-view.tsx`（251 vs 268 行）—— 合并时这里是真实的冲突点，不是快进合并。
+**这是唯一仍待决的一条**：要合成完整站点，`feat/global-hero` 与 `feat/global-breadcrumb` **必须互合**，而两者都改过 `home-view.tsx`（251 vs 268 行）—— 合并时这里是真实的冲突点，不是快进合并。处置状态见第六节第 5 条。
 
 ## 二、模块归属：哪条分支带来了什么
 
-六条本地分支都从 `main`（`30d2b32`）切出。**`main` 之外的每个模块只能靠分支合入才能上线** —— 当前 `main` 只有骨架。
+六条本地分支都从当时的 `main`（`30d2b32`）切出。下表记录**盘点时**各模块由哪条分支引入；`main` 快进后，Header / Footer / 路由登记表已在 `main` 上。
 
 | 模块 | 引入分支 | 该分支代码增删 | 说明 |
 | --- | --- | --- | --- |
@@ -79,23 +79,23 @@ main (30d2b32)
 
 ## 三、远程同步状态
 
-**七条分支全部在远程。** 盘点开始时远程只有 `main` 与 `feat/global-header-footer`，其余五条从未推送；本次已全部推上。
+**七条分支全部在远程，且 `main` 已不再是骨架。**
 
-| 分支 | 本地 HEAD | 远程 | 领先 main | 状态 |
-| --- | --- | --- | --- | --- |
-| `main` | `30d2b32` | `30d2b32` | 0 | ✅ 同步 |
-| `feat/global-header-footer` | `60bdb15` | `60bdb15` | 13 | ✅ 同步 |
-| `feat/header-03-products-mega-menu` | `5e209d9` | `5e209d9` | 11 | ✅ 已推送（但落后集成分支两提交，见第五节） |
-| `feat/footer-02-link-groups` | `b87468b` | `b87468b` | 12 | ✅ 已推送 |
-| `feat/global-hero` | 见 `origin/feat/global-hero` | 同步 | — | ✅ 已推送（含本次文档提交） |
-| `feat/breadcrumb-01-preview-route-placeholders` | `8496ace` | `8496ace` | 16 | ✅ 已推送 |
-| `feat/global-breadcrumb` | `ef6fc5b` | `ef6fc5b` | 24 | ✅ 已推送 |
+| 分支 | HEAD | 相对 `main` | 状态 |
+| --- | --- | --- | --- |
+| `main` | `71534f0` | 基准 | ✅ 已快进到集成分支，含 `route-registry.ts` 与全部共享组件 |
+| `feat/global-header-footer` | `71534f0` | 落后 0 / 领先 0 | ✅ 与 `main` 同一提交 |
+| `feat/header-03-products-mega-menu` | `45aef08` | 落后 1 / 领先 3 | ✅ 已推送，含 mega menu 与 ticket 记录 |
+| `feat/footer-02-link-groups` | `a8c79dd` | 落后 3 / 领先 2 | ✅ 已推送，含链接组与 ticket handoff |
+| `feat/global-hero` | 见 `origin/feat/global-hero` | 落后 1 / 领先 8 | ✅ 已推送（本文件在这条分支上，哈希随修订而变） |
+| `feat/breadcrumb-01-preview-route-placeholders` | `8496ace` | 落后 1 / 领先 3 | ✅ 已推送 |
+| `feat/global-breadcrumb` | `ef6fc5b` | 落后 1 / 领先 11 | ✅ 已推送 |
 
-`git push --dry-run` 与真实推送均实测通过，凭证与连通性正常。仓库地址：`https://github.com/coyafky/WheelSiteRebuild.git`。
+`git ls-remote` 与本地逐分支比对一致。仓库地址：`https://github.com/coyafky/WheelSiteRebuild.git`。
 
-`feat/global-hero` 的哈希随每次文档修订而变（本文件本身就在这条分支上），故不写死值，取 `git rev-parse origin/feat/global-hero` 为准。
+⚠️ **「落后」列是正常的。** `main` 刚刚快进了集成分支的修复，其余分支还没把这条修复合进来。下次动某条分支时先把 `main` 合进去即可，`roles.md` 的流程本来就要求推送前先合并集成分支。
 
-⚠️ **推送不等于合入。** 七条分支各自独立，`main` 仍是骨架；完整站点需要人工作合并决策（见第六节第 5 条）。
+⚠️ **推送与快进不等于全站可发布。** `main` 现在有共享 Header / Footer / Hero 骨架与路由登记表，但页面内容仍是占位，首页带 `noindex, nofollow`。完整站点还需要第 5 条的合并决策。
 
 ## 四、Agent 归属证据
 
@@ -115,33 +115,62 @@ main (30d2b32)
 - 9 个 Cursor 署名提交中，`main` 的基线提交 `30d2b32` 也带该署名 —— 说明这是工具默认附加，**不能单独作为「Cursor 实现了这段代码」的证明**。
 - 结论：**Hero = Alma（有 handoff）｜ Breadcrumb = Codex（有 claim）｜ Header/Footer/Mega-menu = 未记录**。
 
-## 五、未提交的在途工作
+## 五、在途工作（已于本轮清零）
 
-盘点时 `.worktrees/` 下 5 个工作树里，**只有 `header-03` 有未提交改动**，其余四个工作区干净。
+盘点时 `.worktrees/` 下 5 个工作树里只有 `header-03` 有未提交改动（+122 −14）。**这批改动已提交并合并，现在五个工作区全部干净。**
 
-`.worktrees/header-03` 的三处修改 + 一个新测试文件（共 +122 −14），是对已有 mega menu 的**重构与测试补齐**：
+当时的改动内容：
 
 | 文件 | 改动 |
 | --- | --- |
-| `site/src/components/site-header/products-mega-menu.tsx` | 30 行 → 44 行：导出 `productsMegaMenuId`、`open` 改为可选、加焦点可见样式、平台与总览变量语义调换 |
-| `site/src/components/site-header/primary-header.tsx` | +52，挂载入口与交互 |
-| `site/src/components/site-header/header.tsx` | +39，容器配合 |
-| `site/tests/int/products-mega-menu.int.spec.ts` | 新增测试（此前无 mega menu 单测） |
+| `site/src/components/site-header/products-mega-menu.tsx` | 从 `return null` 空壳做成注册表驱动的面板 |
+| `site/src/components/site-header/primary-header.tsx` | disclosure 按钮与键盘交互 |
+| `site/src/components/site-header/header.tsx` | 开合状态与关闭时机 |
+| `site/tests/int/products-mega-menu.int.spec.ts` | 新增 7 例（此前该组件零测试） |
 
-**注意这条分支的 HEAD 是旧的**：`feat/header-03-products-mega-menu` 的 HEAD `5e209d9` 比已推送的 `60bdb15` 落后两个提交（`496979c`、`60bdb15`），**没合过 global-header-footer 的后续进展**。而 `60bdb15` 上的 mega menu 已经是可用的 30 行实现（`5e209d9` 上只有 `return null` 的空壳）—— 所以这条分支**即使推送了，内容也落后于集成分支**。
+**当时判断对了一半**：正确指出这条分支 HEAD 落后集成分支两个提交（`5e209d9` 上 mega menu 只是空壳），但低估了合并代价 —— 实际合并时三个文件全部冲突，且暴露出四个真实缺陷（详见第六节第 9 条）。
 
-正确做法：先提交工作树的改动，再把 `60bdb15` 合进来，跑通检查后才算完成。
+后续分支 HEAD 见第三节。
 
-## 六、待决的仓库结构问题
+## 六、盘点问题的处置结果
 
-盘点时发现的、需要仓库层面而不是代码层面处理的事：
+初版把这九条列成「待决」。2026-11-01 09:30–09:50 逐条实际处理完毕，下表是**处置结果**，不是待办。
 
-1. **`.alma-snapshots/`（21 MB）未被忽略** —— `git check-ignore` 判定 `TRACKABLE`。它是 Alma 的版本快照目录，一旦误提交会把 21 MB 塞进历史。同类：`.pnpm-store/`（含 5 个 `v11/projects/*` 二进制索引）。
-2. **`docs/agents/roles.md` 未被跟踪** —— 而 `AGENTS.md`、`PROJECT_INDEX.md`、`NOW.md` 三处都已加了指向它的链接。**已提交的文档指向一个不在仓库里的文件。**
-3. **`.scratch/rayone-research-adoption/spec.md`、`docs/01-design/RAYONE_RESEARCH_ADOPTION.md` 未被跟踪** —— 同样已被 `NOW.md` 与 `PROJECT_INDEX.md` 引用。
-4. **ticket 状态与实际实现不一致**：`feat/footer-02-link-groups` 已提交「给页脚加链接组」，但 `.scratch/global-footer/issues/02-footer-link-groups.md` 的 `Status:` 仍是 `ready-for-agent`；`feat/header-03-products-mega-menu` 的 mega menu 已实现，ticket `03` 同样是 `ready-for-agent`。按 `roles.md` 的流程，完成应改 `resolved` 并写 handoff。
-5. **`feat/global-hero` 与 `feat/global-breadcrumb` 无法自动合并** —— 两条各 22 个组件但内容互补（hero vs breadcrumb），且都改过 `home-view.tsx`（251 / 268 行）。任何「合并所有分支」的动作必须先定谁作主干、再人工解 `home-view.tsx` 与 `route-registry.ts` 的冲突。
-6. **`route-registry.ts` 是全分支冲突热点** —— 六条分支里五条都改了它（+119 或 +127 行）。`roles.md` 已把它列为已知冲突点，但实际冲突范围比记录的更大。
-7. **`main` 上没有 `route-registry.ts`** —— 它在 `5e209d9` 才出现。任何从 `main` 新切的分支都拿不到这份共享登记表。
-8. **`site/AGENTS.md` 由 `next dev` 自动重写** —— 已在 `roles.md` 标注，不要手改。
-9. **`.worktrees/` 有 5 个活动工作树**，其中 `.worktrees/header-03` 有未提交改动（3 个 modified + 1 个未跟踪测试文件）。
+| # | 问题 | 处置 |
+| --- | --- | --- |
+| 1 | `.alma-snapshots/`（21 MB）与 `.pnpm-store/` 未被忽略 | ✅ 已加进 `.gitignore`，`git check-ignore` 现判 `IGNORED` |
+| 2 | `docs/agents/roles.md` 未被跟踪，但三处文档已链接它 | ✅ 已提交 |
+| 3 | RAYONE 吸收说明与总 Spec 未被跟踪 | ✅ 已提交 |
+| 4 | ticket 状态停在 `ready-for-agent` 而实现已完成 | ✅ footer ticket 02 与 header ticket 03 均改 `resolved` 并补 Handoff |
+| 5 | `feat/global-hero` 与 `feat/global-breadcrumb` 无法自动合并 | ⏳ **仍待决** —— 这是合并策略选择，不是缺陷 |
+| 6 | `route-registry.ts` 是全分支冲突热点 | ✅ 已从源头收敛：`main` 现在有它，新分支不再各自造 |
+| 7 | `main` 上没有 `route-registry.ts` | ✅ `main` 已快进到 `71534f0`，登记表在 `main` 上 |
+| 8 | `site/AGENTS.md` 由 `next dev` 自动重写 | ✅ 核实：文件自己写明「提交它反而让工作树保持干净」，且已入库、工作区无差异 |
+| 9 | `.worktrees/header-03` 有未提交改动 | ✅ 已提交并合并集成分支，见下 |
+
+### 第 9 条的详情：mega menu 从空壳到可用
+
+`.worktrees/header-03` 那批未提交改动提交后（`45800ec`），跑测试发现 **7 个用例里 1 个是红的** —— 「路由变化时关闭」失败，因为 `header.tsx` 只监听 Escape 与 pointerdown，没监听路径变化。这是真实缺陷，不是测试写错。
+
+合并集成分支时三个文件全部冲突，过程中又挖出三个真实缺陷：
+
+1. **`Request a QuoteQuote`** —— `header-actions.tsx` 同时渲染桌面 span 与移动 span，`textContent` 会把两份拼起来。实测确认。现有 13 个 header 用例全用 `getByRole('link', { name: 'Request a Quote' })`，而 `aria-label` 恰好掩盖了可见文本问题，所以一直没暴露。**这条缺陷在集成分支 `60bdb15` 上也存在**，已单独在集成分支修复（`71534f0`）并补了带阴性对照的测试。
+2. disclosure 按钮没有 Enter/Space 处理，键盘打不开。
+3. 主导航用 `hidden lg:flex`，jsdom 不识别断点导致整条导航不可读。
+
+### 第 6、7 条的连带效果
+
+`main` 快进后，`route-registry.ts`、`site-chrome/`、`site-header/`、`site-footer/` 全部进入 `main`。**从此新切的分支都能直接拿到共享登记表**，这正是第 6 条「全分支冲突热点」的根因。
+
+### 唯一仍待决的一条
+
+第 5 条不是缺陷而是选择：`feat/global-hero` 与 `feat/global-breadcrumb` 各 22 个组件但内容互补，且都改过 `home-view.tsx`。要合成完整站点必须人工决定谁作主干、再解 `home-view.tsx` 与 `route-registry.ts` 的冲突。**这一步需要项目负责人拍板，不是自动化能定的。**
+
+### 本轮验证方式
+
+每项处置都有机器可读证据，不靠「看了一遍觉得对」：
+
+- 各分支 `npx vitest run --config ./vitest.config.mts`、`tsc --noEmit`、`eslint` 实跑
+- 重复文本缺陷做了**阴性对照**：回退实现后测试精确报 `expected 'Request a QuoteQuote' to be 'Request a Quote'`，恢复后转绿
+- `main` 与集成分支已推送，`git ls-remote` 与本地逐分支比对一致
+- 唯一未跑通的是 `api.int.spec.ts`，缺 Payload secret 与 PostgreSQL —— **这是 `roles.md` 已记录的环境缺口，不是代码缺陷**
