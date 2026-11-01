@@ -1,9 +1,10 @@
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
-import { describe, expect, it } from 'vitest'
-import PreviewPage from '@/app/(frontend)/[...slug]/page'
+import { describe, expect, it, vi } from 'vitest'
+import PreviewPage, { generateMetadata } from '@/app/(frontend)/[...slug]/page'
 import { BreadcrumbTrail, SiteBreadcrumb } from '@/components/site-breadcrumb/site-breadcrumb'
 import { resolvePreviewRoute } from '@/navigation/preview-route-registry'
+import { getBlogArticleTrail, type BlogArticle } from '@/navigation/blog-article-trail'
 import { getNavigationRoute } from '@/navigation/route-registry'
 
 async function pageHtml(path: string) {
@@ -182,5 +183,114 @@ describe('visible breadcrumbs', () => {
       ),
     ).toBe('')
     expect(html).not.toContain('application/ld+json')
+  })
+
+  it.each([
+    ['blog', ['Home', 'Blog'], ['/']],
+    ['blog-technical', ['Home', 'Blog', 'Technical Articles'], ['/', '/blog']],
+    ['blog-company-news', ['Home', 'Blog', 'Company News'], ['/', '/blog']],
+  ] as const)('shows the fixed Blog preview ancestry for %s', (currentId, labels, parentPaths) => {
+    const html = renderToStaticMarkup(createElement(SiteBreadcrumb, { currentId }))
+    const container = document.createElement('div')
+    container.innerHTML = html
+    const items = [...container.querySelectorAll('nav[aria-label="Breadcrumb"] li')]
+
+    expect(items.map((item) => item.textContent?.replace('/', '').trim())).toEqual(labels)
+    expect(items.slice(0, -1).map((item) => item.querySelector('a')?.getAttribute('href'))).toEqual(
+      parentPaths,
+    )
+    expect(items.at(-1)?.querySelector('[aria-current="page"]')?.textContent).toBe(labels.at(-1))
+    expect(items.at(-1)?.querySelector('a')).toBeNull()
+    expect(html).not.toContain('application/ld+json')
+    expect(renderToStaticMarkup(createElement(SiteBreadcrumb, { currentId, mode: 'public' }))).toBe(
+      '',
+    )
+  })
+
+  it.each([
+    [
+      '/blog/mock-wheel-engineering',
+      ['Home', 'Blog', 'Technical Articles', 'Mock Wheel Engineering Article'],
+    ],
+    ['/blog/mock-company-update', ['Home', 'Blog', 'Company News', 'Mock Company Update']],
+  ])('renders only a known test article as a development preview at %s', async (path, labels) => {
+    vi.stubEnv('NODE_ENV', 'development')
+    try {
+      const params = Promise.resolve({ slug: path.slice(1).split('/') })
+      const html = renderToStaticMarkup(await PreviewPage({ params }))
+      const metadata = await generateMetadata({ params })
+      const container = document.createElement('div')
+      container.innerHTML = html
+      const items = [...container.querySelectorAll('nav[aria-label="Breadcrumb"] li')]
+
+      expect(items.map((item) => item.textContent?.replace('/', '').trim())).toEqual(labels)
+      expect(items.at(-1)?.querySelector('[aria-current="page"]')?.textContent).toBe(labels.at(-1))
+      expect(items.at(-1)?.querySelector('a')).toBeNull()
+      expect(container.querySelector('h1')?.textContent).toBe(labels.at(-1))
+      expect(html).toContain('Test content for internal preview only')
+      expect(metadata.robots).toEqual({ index: false, follow: false })
+      expect(metadata.alternates?.canonical).toBeUndefined()
+      expect(html).not.toContain('application/ld+json')
+    } finally {
+      vi.unstubAllEnvs()
+    }
+  })
+
+  it('changes a mock article ancestry with its category while keeping the article path stable', () => {
+    const article: BlogArticle = {
+      slug: 'mock-wheel-engineering',
+      title: 'Mock Wheel Engineering Article',
+      categoryId: 'blog-technical',
+      publicationState: 'test',
+      reviewed: false,
+    }
+    const technical = getBlogArticleTrail(article, 'preview')
+    const company = getBlogArticleTrail({ ...article, categoryId: 'blog-company-news' }, 'preview')
+
+    expect(technical?.map((item) => item.label)).toEqual([
+      'Home',
+      'Blog',
+      'Technical Articles',
+      article.title,
+    ])
+    expect(company?.map((item) => item.label)).toEqual([
+      'Home',
+      'Blog',
+      'Company News',
+      article.title,
+    ])
+    expect(technical?.at(-1)?.path).toBe('/blog/mock-wheel-engineering')
+    expect(company?.at(-1)?.path).toBe('/blog/mock-wheel-engineering')
+    if (!technical || !company) throw new Error('Missing article preview trail')
+    const structuredPaths = (items: typeof technical) => {
+      const html = renderToStaticMarkup(
+        createElement(BreadcrumbTrail, {
+          items: items.map((item) => ({ ...item, published: true })),
+          siteOrigin: 'https://wheel.example',
+        }),
+      )
+      const json = html.match(/<script type="application\/ld\+json">(.*?)<\/script>/)?.[1]
+      return JSON.parse(json ?? '').itemListElement.map((item: { name: string; item: string }) => [
+        item.name,
+        item.item,
+      ])
+    }
+    expect(structuredPaths(technical)).toEqual([
+      ['Home', 'https://wheel.example/'],
+      ['Blog', 'https://wheel.example/blog'],
+      ['Technical Articles', 'https://wheel.example/blog/technical'],
+      [article.title, 'https://wheel.example/blog/mock-wheel-engineering'],
+    ])
+    expect(structuredPaths(company)).toEqual([
+      ['Home', 'https://wheel.example/'],
+      ['Blog', 'https://wheel.example/blog'],
+      ['Company News', 'https://wheel.example/blog/company-news'],
+      [article.title, 'https://wheel.example/blog/mock-wheel-engineering'],
+    ])
+    expect(getBlogArticleTrail(article, 'public')).toBeNull()
+    expect(
+      getBlogArticleTrail({ ...article, publicationState: 'published', reviewed: true }, 'public'),
+    ).toBeNull()
+    expect(getBlogArticleTrail({ ...article, categoryId: undefined }, 'preview')).toBeNull()
   })
 })

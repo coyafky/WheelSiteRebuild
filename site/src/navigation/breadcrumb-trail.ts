@@ -23,6 +23,9 @@ const parents: Partial<Record<NavigationRouteId, NavigationRouteId>> = {
   'request-quote': 'home',
   'privacy-policy': 'home',
   'terms-of-use': 'home',
+  blog: 'home',
+  'blog-technical': 'blog',
+  'blog-company-news': 'blog',
 }
 
 export function getBreadcrumbTrail(
