@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { resolvePreviewRoute } from '@/navigation/preview-route-registry'
+import { SiteBreadcrumb } from '@/components/site-breadcrumb/site-breadcrumb'
 
 type Props = { params: Promise<{ slug: string[] }> }
 
@@ -27,6 +28,7 @@ export default async function PreviewPage({ params }: Props) {
       id="main"
       className="mx-auto min-h-[60vh] w-full max-w-[1500px] px-5 py-16 sm:px-8 lg:px-10"
     >
+      <SiteBreadcrumb currentId={route.id} />
       <p className="mb-4 text-sm font-semibold text-muted-foreground">
         Internal implementation preview
       </p>
