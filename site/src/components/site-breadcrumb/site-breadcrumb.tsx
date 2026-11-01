@@ -1,5 +1,7 @@
 import { getBreadcrumbTrail } from '@/navigation/breadcrumb-trail'
-import type { NavigationRoute, NavigationRouteId } from '@/navigation/route-registry'
+import type { NavigationRouteId } from '@/navigation/route-registry'
+
+type BreadcrumbItem = { id: string; label: string; path: string; published: boolean }
 
 export function SiteBreadcrumb({
   currentId,
@@ -20,21 +22,23 @@ export function BreadcrumbTrail({
   items,
   siteOrigin,
 }: {
-  items: readonly NavigationRoute[]
+  items: readonly BreadcrumbItem[]
   siteOrigin?: string
 }) {
-  const structuredData = siteOrigin
-    ? {
-        '@context': 'https://schema.org',
-        '@type': 'BreadcrumbList',
-        itemListElement: items.map((route, index) => ({
-          '@type': 'ListItem',
-          position: index + 1,
-          name: route.label,
-          item: new URL(route.path, siteOrigin).href,
-        })),
-      }
-    : null
+  const siteUrl = siteOrigin && URL.canParse(siteOrigin) ? new URL(siteOrigin) : null
+  const structuredData =
+    siteUrl?.protocol === 'https:' && items.every((route) => route.published)
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: items.map((route, index) => ({
+            '@type': 'ListItem',
+            position: index + 1,
+            name: route.label,
+            item: new URL(route.path, siteUrl.origin).href,
+          })),
+        }
+      : null
 
   return (
     <>

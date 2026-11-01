@@ -41,7 +41,7 @@ describe('visible breadcrumbs', () => {
       getNavigationRoute('home'),
       getNavigationRoute('products'),
       getNavigationRoute('wheels'),
-    ]
+    ].map((route) => ({ ...route, published: true }))
     const html = renderToStaticMarkup(
       createElement(BreadcrumbTrail, { items, siteOrigin: 'https://wheel.example' }),
     )
@@ -67,5 +67,25 @@ describe('visible breadcrumbs', () => {
         },
       ],
     })
+  })
+
+  it('does not emit structured data for unpublished items even when given an origin', () => {
+    const items = [getNavigationRoute('home'), getNavigationRoute('products')]
+    const html = renderToStaticMarkup(
+      createElement(BreadcrumbTrail, { items, siteOrigin: 'https://wheel.example' }),
+    )
+
+    expect(html).not.toContain('application/ld+json')
+  })
+
+  it('does not emit public URL data from an invalid origin', () => {
+    const items = [getNavigationRoute('home'), getNavigationRoute('products')].map((route) => ({
+      ...route,
+      published: true,
+    }))
+
+    expect(
+      renderToStaticMarkup(createElement(BreadcrumbTrail, { items, siteOrigin: 'invalid-origin' })),
+    ).not.toContain('application/ld+json')
   })
 })
