@@ -118,4 +118,31 @@ describe('visible breadcrumbs', () => {
       renderToStaticMarkup(createElement(SiteBreadcrumb, { currentId: routeId, mode: 'public' })),
     ).toBe('')
   })
+
+  it.each([
+    ['/capabilities', ['Home', 'Engineering'], ['/']],
+    ['/capabilities/wheels', ['Home', 'Engineering', 'Wheel Engineering'], ['/', '/capabilities']],
+    [
+      '/capabilities/safety-tires',
+      ['Home', 'Engineering', 'Safety Tire Capabilities'],
+      ['/', '/capabilities'],
+    ],
+  ])('shows the Engineering ancestry for %s', async (path, labels, parentPaths) => {
+    const container = document.createElement('div')
+    container.innerHTML = await pageHtml(path)
+    const items = [...container.querySelectorAll('nav[aria-label="Breadcrumb"] li')]
+
+    expect(items.map((item) => item.textContent?.replace('/', '').trim())).toEqual(labels)
+    expect(items.slice(0, -1).map((item) => item.querySelector('a')?.getAttribute('href'))).toEqual(
+      parentPaths,
+    )
+    expect(items.at(-1)?.querySelector('[aria-current="page"]')?.textContent).toBe(labels.at(-1))
+    expect(items.at(-1)?.querySelector('a')).toBeNull()
+    const route = resolvePreviewRoute(path.slice(1).split('/'))
+    if (!route) throw new Error(`Missing route: ${path}`)
+    expect(
+      renderToStaticMarkup(createElement(SiteBreadcrumb, { currentId: route.id, mode: 'public' })),
+    ).toBe('')
+    expect(container.querySelector('script[type="application/ld+json"]')).toBeNull()
+  })
 })
