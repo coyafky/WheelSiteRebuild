@@ -1,6 +1,6 @@
 # Global Breadcrumb Spec
 
-Status: design specification, 2026-10-31; not implemented. Parent relationships come from [Sitemap](../../docs/02-架构/SITEMAP.md); structured-data rules from [SEO Spec](../site-seo/spec.md).
+Status: design specification, 2026-10-31; fixed-route breadcrumbs and development Blog previews implemented, public Blog article acceptance pending [ticket 06](issues/06-blog-breadcrumb.md). Parent relationships come from [Sitemap](../../docs/02-架构/SITEMAP.md); structured-data rules from [SEO Spec](../site-seo/spec.md).
 
 ## Contract
 
