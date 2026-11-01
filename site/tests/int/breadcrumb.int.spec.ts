@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import PreviewPage from '@/app/(frontend)/[...slug]/page'
 import { BreadcrumbTrail, SiteBreadcrumb } from '@/components/site-breadcrumb/site-breadcrumb'
+import { resolvePreviewRoute } from '@/navigation/preview-route-registry'
 import { getNavigationRoute } from '@/navigation/route-registry'
 
 async function pageHtml(path: string) {
@@ -87,5 +88,34 @@ describe('visible breadcrumbs', () => {
     expect(
       renderToStaticMarkup(createElement(BreadcrumbTrail, { items, siteOrigin: 'invalid-origin' })),
     ).not.toContain('application/ld+json')
+  })
+
+  it.each([
+    ['/products/ev-housings', ['Home', 'Products', 'EV Housings']],
+    ['/products/custom-aluminum', ['Home', 'Products', 'Custom Aluminum']],
+    ['/products/safety-tires', ['Home', 'Products', 'Safety Tires']],
+    ['/products/wheels/flow-formed', ['Home', 'Products', 'Wheels', 'Flow-Formed Wheels']],
+    ['/products/wheels/forged', ['Home', 'Products', 'Wheels', 'Forged Wheels']],
+    ['/products/wheels/custom', ['Home', 'Products', 'Wheels', 'Custom Wheels']],
+  ])('shows the fixed product ancestry for %s without publishing it', async (path, labels) => {
+    const container = document.createElement('div')
+    container.innerHTML = await pageHtml(path)
+    const nav = container.querySelector('nav[aria-label="Breadcrumb"]')
+    const items = [...(nav?.querySelectorAll('li') ?? [])]
+
+    expect(items.map((item) => item.textContent?.replace('/', '').trim())).toEqual(labels)
+    expect(items.slice(0, -1).map((item) => item.querySelector('a')?.getAttribute('href'))).toEqual(
+      labels
+        .slice(0, -1)
+        .map((_, index) => (index === 0 ? '/' : index === 1 ? '/products' : '/products/wheels')),
+    )
+    expect(items.at(-1)?.querySelector('[aria-current="page"]')?.textContent).toBe(labels.at(-1))
+    expect(items.at(-1)?.querySelector('a')).toBeNull()
+    expect(container.querySelector('script[type="application/ld+json"]')).toBeNull()
+    const routeId = resolvePreviewRoute(path.slice(1).split('/'))?.id
+    if (!routeId) throw new Error(`Missing preview route: ${path}`)
+    expect(
+      renderToStaticMarkup(createElement(SiteBreadcrumb, { currentId: routeId, mode: 'public' })),
+    ).toBe('')
   })
 })

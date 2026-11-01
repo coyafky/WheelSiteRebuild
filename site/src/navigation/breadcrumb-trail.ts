@@ -7,6 +7,12 @@ import {
 const parents: Partial<Record<NavigationRouteId, NavigationRouteId>> = {
   products: 'home',
   wheels: 'products',
+  'ev-housings': 'products',
+  'custom-aluminum': 'products',
+  'safety-tires': 'products',
+  'wheel-flow-formed': 'wheels',
+  'wheel-forged': 'wheels',
+  'wheel-custom': 'wheels',
 }
 
 export function getBreadcrumbTrail(
