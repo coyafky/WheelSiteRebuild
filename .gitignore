@@ -12,3 +12,7 @@ site/playwright-report/
 site/*.tsbuildinfo
 
 .worktrees/
+
+# Alma 版本快照与本地包缓存（工具产物，不入库）
+.alma-snapshots/
+.pnpm-store/

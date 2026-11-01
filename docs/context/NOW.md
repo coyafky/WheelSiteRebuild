@@ -9,6 +9,7 @@
 - 已建立项目规则、索引、项目说明和专题文档骨架。
 - 英文站页面层级、路由和导航已按 RAYONE Wheels 的部分产品发现、轮毂 Engineering、Company 制造内容与询盘逻辑修订；新增 How We Work 和 Manufacturing 首发目标页，并细化 Wheel Engineering 的设计、工艺和质量区块。页面规划已由用户确认，页面内容与实际页面验收仍待完成，完整范围见 [Sitemap](../02-架构/SITEMAP.md)。
 - 已完成 [RAYONE Sitemap 与信息架构调研](../02-架构/RAYONE_SITEMAP_RESEARCH.md)，核对其首页 hash 区块、独立产品／文章／方案 URL 和 XML sitemap，并按当前设计的覆盖情况提出优先级建议；新增建议尚未改变本站页面树。
+- 已与项目负责人确认 [RAYONE 拆解报告吸收说明](../01-design/RAYONE_RESEARCH_ADOPTION.md)及 [研究吸收总 Spec](../../.scratch/rayone-research-adoption/spec.md)：按全局组件、页面组件与内容写法三层对照；轮毂采购路径先行，规格表、页内索引、搜索、Fitment Lookup、图库、轮播和 3D 全部纳入规划并按数据与素材条件分阶段启用。此为规划，不表示组件或页面已经实现。
 - 已在 [Sitemap](../02-架构/SITEMAP.md) 补充标准采购、定制开发、供应商核查与文章阅读的页面衔接路径，以及统一询盘的可编辑上下文；轮毂下新增旋压、锻造、定制三个固定子页作为 Launch 目标，工艺与项目路径明确区分。其他类别／型号详情仍受独立内容条件约束。
 - 已确认 Next.js 与 Payload 的首期内容架构、产品平台和 Blog 内容边界，见 [CMS 内容架构](../02-架构/CMS_ARCHITECTURE.md)；已建立四平台 Payload 集合及首页预览，完整业务 schema 与其余页面仍待实现。
 - 已依据用户给定的 VPS/Docker、暂无 GitHub 仓库条件建立 `site/` 应用骨架、本地 Git 仓库、PostgreSQL 开发 Compose 和生产 Compose/Caddy 配置，具体选型与边界见 [Project Bootstrap](../02-架构/PROJECT_BOOTSTRAP.md)。本轮生产构建、类型检查与 lint 已通过；容器运行和 VPS 发布尚未验证。
@@ -30,6 +31,7 @@
 
 - 后续任务按 [`PROJECT_INDEX.md`](../../PROJECT_INDEX.md) 定位所需资料；三个 agent 按 ticket 领取制分工，领取流程、handoff 格式与 git 分支规则见 [`docs/agents/roles.md`](../agents/roles.md)。
 - 补齐首页可公开使用的 Logo、四平台英文简介及产品图，核实图片权利与对外主张；按各页 Specs 实现目的页、共享 Header/Footer 与询盘流程，再依据内容和 SEO 发布门槛解除首页 noindex。三个轮毂子页、How We Work、Manufacturing 与 Privacy Policy 仍需各自资料和验收；Blog 和 Terms of Use 满足各自条件后再开放。
+- 按 [研究吸收总 Spec](../../.scratch/rayone-research-adoption/spec.md)拆分轮毂采购路径的实施 ticket；数据依赖组件分别定义素材、字段、工程复核与发布门槛，再按 ticket 领取制执行。
 - 发现事实或状态实质变化后，先更新其唯一权威来源；按需修订本页。
 
 ## 证据入口

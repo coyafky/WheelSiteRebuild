@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hero 组件怎么读</title>
+  <style>
+    :root {
+      --page: #f5f5f7;
+      --card: #ffffff;
+      --ink: #0b0b0c;
+      --muted: #666a70;
+      --line: #e0e0e0;
+      --red: #8e1218;
+      --code: #f7f7f8;
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 24px;
+      --space-6: 32px;
+      --space-7: 48px;
+      --space-8: 64px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font-family: system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 26px;
+    }
+
+    a { color: var(--red); }
+    a:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+
+    .wrap {
+      width: min(68ch, calc(100% - 40px));
+      margin: 0 auto;
+      padding: var(--space-7) 0 var(--space-8);
+    }
+
+    header { margin-bottom: var(--space-7); }
+
+    .kicker {
+      margin: 0 0 var(--space-3);
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      line-height: 20px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0 0 var(--space-4);
+      font-size: 40px;
+      font-weight: 650;
+      letter-spacing: -0.03em;
+      line-height: 44px;
+    }
+
+    h2 {
+      margin: var(--space-8) 0 var(--space-4);
+      font-size: 28px;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      line-height: 34px;
+    }
+
+    h3 {
+      margin: var(--space-6) 0 var(--space-3);
+      font-size: 18px;
+      font-weight: 650;
+      line-height: 26px;
+    }
+
+    p { margin: 0 0 var(--space-4); }
+    p:last-child { margin-bottom: 0; }
+
+    ul, ol { margin: 0 0 var(--space-4); padding-left: 1.25rem; }
+    li + li { margin-top: var(--space-2); }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.92em;
+    }
+
+    p code, li code, td code {
+      background: var(--code);
+      border-radius: 4px;
+      padding: 0 4px;
+    }
+
+    pre {
+      margin: 0 0 var(--space-4);
+      padding: var(--space-4);
+      overflow-x: auto;
+      background: var(--ink);
+      color: #f5f5f7;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    pre code { background: transparent; padding: 0; color: inherit; }
+
+    .note, .map, .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .note, .map, .card { padding: var(--space-4); margin: 0 0 var(--space-5); }
+    .note strong, .card strong { font-weight: 650; }
+
+    nav ol { margin-bottom: 0; }
+
+    .table-scroll {
+      margin: 0 0 var(--space-5);
+      overflow-x: auto;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      margin: 0;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid var(--line);
+    }
+
+    th {
+      font-size: 14px;
+      font-weight: 650;
+      line-height: 20px;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    .stage {
+      display: grid;
+      gap: var(--space-4);
+      margin: 0 0 var(--space-5);
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: var(--space-4);
+    }
+
+    .panel h3 { margin-top: 0; }
+    .fake-title { margin: 0 0 8px; font-size: 22px; font-weight: 650; line-height: 28px; }
+    .fake-copy { margin: 0 0 16px; color: var(--muted); }
+    .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+    .pill, .textlink {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      text-decoration: none;
+    }
+    .pill {
+      padding: 0 20px;
+      border-radius: 999px;
+      background: var(--red);
+      color: #fff;
+    }
+    .textlink { color: var(--ink); }
+    .media {
+      display: flex;
+      align-items: center;
+      min-height: 160px;
+      padding: var(--space-4);
+      border: 1px solid var(--line);
+      border-left: 2px solid var(--red);
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+    }
+
+    .flow { display: grid; gap: var(--space-3); margin: 0 0 var(--space-5); }
+    .step {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: var(--space-3);
+      align-items: start;
+    }
+    .num {
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: var(--ink);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    footer {
+      margin-top: var(--space-8);
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 21px;
+    }
+
+    @media (min-width: 800px) {
+      .stage { grid-template-columns: 1.1fr 0.9fr; align-items: stretch; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <p class="kicker">给第一次改这段代码的人</p>
+      <h1>Hero 组件怎么读</h1>
+      <p>每个页面顶部那一块大标题，都走同一个组件：<code>site/src/components/hero/hero.tsx</code>。页面负责写人话，组件负责标题层级、字号、按钮、图片位置，以及「写错了就让构建失败」。</p>
+      <p>这份 HTML 是讲解。组件该怎么做，以 <a href="../../../.scratch/global-hero/spec.md">Global Hero Spec</a> 为准。源码里的注释如果和校验代码不一致，以校验代码为准。</p>
+    </header>
+
+    <nav class="map" aria-label="目录">
+      <strong>按这个顺序读</strong>
+      <ol>
+        <li><a href="#picture">页面上它长什么样</a></li>
+        <li><a href="#pieces">源码分成哪几块</a></li>
+        <li><a href="#props">页面能传什么</a></li>
+        <li><a href="#run">函数从上到下怎么跑</a></li>
+        <li><a href="#words">文案归谁</a></li>
+        <li><a href="#actions">按钮和链接</a></li>
+        <li><a href="#media">图片和占位</a></li>
+        <li><a href="#throws">哪些输入会直接报错</a></li>
+        <li><a href="#home">首页是怎么调用的</a></li>
+        <li><a href="#prompt">交给 AI 改之前先写进提示词</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="picture">页面上它长什么样</h2>
+    <p>窄屏时，文字在上、图在下。宽屏（1024px 起）时，左边文字，右边图，文字列稍宽。图可以不传。不传时，右边整列都不渲染，左边标题、说明和按钮照样完整。</p>
+    <div class="stage" aria-hidden="true">
+      <div class="panel">
+        <p class="fake-title">Four platforms. Two ways to work.</p>
+        <p class="fake-copy">一段属于这一页的短说明。一行大约 55 个字符，读起来不用横扫整屏。</p>
+        <div class="row">
+          <span class="pill">Explore platforms</span>
+          <span class="textlink">Work paths →</span>
+        </div>
+      </div>
+      <div class="media">Approved product imagery pending</div>
+    </div>
+    <p>红色胶囊只有一个，那是主操作。旁边的文字链接是次操作，带一个不读出来的箭头。占位盒子上的字是给内部看的，告诉你这还不是产品照片。</p>
+
+    <h2 id="pieces">源码分成哪几块</h2>
+    <p>整个文件大约 250 行，没有 <code>'use client'</code>。它是服务端组件。<code>useId</code> 在服务端也能用，只为了生成不重复的标题 id。</p>
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>块</th><th>名字</th><th>它干什么</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>字号和边距</td><td><code>displaySize</code> <code>pageSize</code> <code>standaloneFrame</code></td><td>首页标题、普通页标题、独立使用时的页面边距。数字来自 Design.md，不在组件里再发明一档中间字号。</td></tr>
+        <tr><td>类型</td><td><code>HeroProps</code> <code>HeroAction</code> <code>HeroMedia</code></td><td>规定页面能传的形状。传错形状，TypeScript 先拦一层。</td></tr>
+        <tr><td>主函数</td><td><code>Hero</code></td><td>检查标题和说明，解析两个动作，拼出网格。页面自己已有外框时只返回网格。</td></tr>
+        <tr><td>图</td><td><code>renderMedia</code> <code>renderApprovedImage</code></td><td>只接受「已批准的图」或「写明待核实的占位」。别的形状直接抛错。</td></tr>
+        <tr><td>守卫</td><td><code>isPendingMedia</code> <code>isMediaImage</code></td><td>运行时再查一遍。图片必须有非空地址，以及正整数的宽和高。</td></tr>
+        <tr><td>动作</td><td><code>resolveAction</code></td><td>把「路由 id」或「页内锚点」变成真正的 <code>href</code> 和可见文字。</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2 id="props">页面能传什么</h2>
+    <p>调用方看到的就是 <code>HeroProps</code>。除了标题和说明，其余都可以不传。</p>
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>属性</th><th>必填</th><th>含义</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>title</code></td><td>是</td><td>这一页唯一的 <code>h1</code>。写买方要办的事，或这一页的主题。</td></tr>
+        <tr><td><code>description</code></td><td>是</td><td>标题下面那段短说明。</td></tr>
+        <tr><td><code>pageType</code></td><td>否，默认 <code>page</code></td><td><code>home</code> 用更大的 display 字号。其他页用 h1 字号。</td></tr>
+        <tr><td><code>media</code></td><td>否</td><td>一张带尺寸的图，或一个待核实占位。没有第三种。</td></tr>
+        <tr><td><code>primaryAction</code></td><td>否</td><td>那颗红色胶囊。最多一颗。</td></tr>
+        <tr><td><code>secondaryAction</code></td><td>否</td><td>旁边的文字链接。最多一条。</td></tr>
+        <tr><td><code>embedded</code></td><td>否</td><td><code>true</code> 时，组件不再包 <code>&lt;section&gt;</code>，也不再加自己的最大宽度和上下留白。外层页面已经有了。</td></tr>
+        <tr><td><code>headingId</code></td><td>否</td><td>给 <code>h1</code> 一个稳定 id，例如 <code>home-hero</code>。不传就用 <code>useId()</code> 生成，避免两个实例撞同一个 id。</td></tr>
+        <tr><td><code>className</code></td><td>否</td><td>追加到网格上。布局主规则仍在组件里。</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="note">
+      <p><strong>规格是一页一个 Hero。</strong> 代码允许两个实例各自有 id，那是为了不制造重复 id。不要因为技术上能渲染两个，就在同一页放两个大标题。</p>
+    </div>
+
+    <h2 id="run">函数从上到下怎么跑</h2>
+    <div class="flow">
+      <div class="step"><span class="num">1</span><p>标题或说明去掉空白后是空的，立刻 <code>throw</code>。页面不会带着空白大标题上线。</p></div>
+      <div class="step"><span class="num">2</span><p>如果传了 <code>headingId</code>，它必须是小写字母开头的 slug，例如 <code>home-hero</code>。不能有空格、大写或 <code>#</code>。</p></div>
+      <div class="step"><span class="num">3</span><p>决定标题 id，再按 <code>pageType</code> 选字号类名。首页是 40/44，到 1024px 变成 60/64。普通页是 34/40，到 1024px 变成 48/54。字重都是 650。</p></div>
+      <div class="step"><span class="num">4</span><p>有主操作或次操作，就调用 <code>resolveAction</code>。没有，按钮那一行整个不渲染。</p></div>
+      <div class="step"><span class="num">5</span><p>拼一个网格：左列最宽 720px，说明最宽约 55 个字符。有 <code>media</code> 才渲染右列。</p></div>
+      <div class="step"><span class="num">6</span><p><code>embedded</code> 为真，到这里就返回网格。否则再包一层 <code>&lt;section aria-labelledby="标题 id"&gt;</code>，并加上 1500px 内容宽度和 Design.md 的上下留白（76 / 96 / 136 px）。</p></div>
+    </div>
+    <pre><code>&lt;h1 id={titleId} data-size-token={sizeToken}&gt;{title}&lt;/h1&gt;
+&lt;p&gt;{description}&lt;/p&gt;
+{primary ? &lt;Button asChild&gt;&lt;a href={primary.path}&gt;...&lt;/a&gt;&lt;/Button&gt; : null}
+{secondary ? &lt;a href={secondary.path}&gt;...&lt;/a&gt; : null}
+{media ? renderMedia(media) : null}</code></pre>
+    <p><code>data-size-token</code> 不参与样式。测试用它确认首页拿到的是 <code>type.display</code>，其他页是 <code>type.h1</code>。真正的字号在 <code>displaySize</code> 和 <code>pageSize</code> 两串 class 里。</p>
+
+    <h2 id="words">文案归谁</h2>
+    <p>组件内部没有一句对外宣传。首页那句 “Four platforms. Two ways to work.” 写在 <code>site/src/components/home/home-view.tsx</code> 的调用处，作为 <code>title</code> 传进来。</p>
+    <p>所以改文案时，去调用 Hero 的那个页面改。不要把某句话写进 <code>hero.tsx</code>。这个组件会被每一页复用，写死一句话，所有页都会带上它。</p>
+    <p>标题要能当这一页的名字。说明接着把这一页在说什么讲完。组件不检查句子好不好，它只拒绝空白。</p>
+
+    <h2 id="actions">按钮和链接</h2>
+    <p><code>HeroAction</code> 是两种对象里的一种，不能混成第三种写法。</p>
+    <h3>页内锚点</h3>
+    <pre><code>primaryAction={{ label: 'Explore platforms', anchor: '#platforms' }}</code></pre>
+    <p><code>anchor</code> 必须长得像 <code>#platforms</code> 或 <code>#work-paths</code>：井号加上小写 slug。单独一个 <code>#</code>、大写、空格都会抛错。标签不能空。组件不会去 DOM 里查这个 id 在不在。注释里写了 “必须指向已经存在的 section”，那一句比代码多承诺了。调用的人要自己保证页面上有对应的 <code>id</code>。</p>
+    <h3>站内路由</h3>
+    <pre><code>primaryAction={{ routeId: 'request-quote' }}
+secondaryAction={{ label: 'See how we work', routeId: 'how-we-work' }}</code></pre>
+    <p><code>routeId</code> 不是网址。组件把它交给 <code>requireNavigationRoute</code>，从 <code>site/src/navigation/route-registry.ts</code> 取出路径。询盘因此会去 <code>/request-quote</code>，组件里没有第二份 URL 清单。</p>
+    <ul>
+      <li>路由还没发布，例如现在的 <code>blog</code>，直接抛错，页面上不会出现一条点进去是空的链接。</li>
+      <li>不传 <code>label</code> 时，用登记里的标签。<code>request-quote</code> 的登记标签是 “Request a Quote”。</li>
+      <li>传了标签但全是空格，抛错。空格在 JavaScript 里是真值，如果用 <code>label || 登记标签</code> 会渲染一颗没有字的红按钮。</li>
+    </ul>
+    <p>主操作用共享的 <code>Button</code>，最低高度 44px，键盘焦点有描边。次操作是文字链接，同样最低 44px，箭头设了 <code>aria-hidden</code>，读屏只读文字。</p>
+
+    <h2 id="media">图片和占位</h2>
+    <h3>还没有核准的图</h3>
+    <pre><code>media={{ pending: true, label: 'Approved product imagery pending' }}</code></pre>
+    <p>这里不输出 <code>&lt;img&gt;</code>。输出一个 <code>role="img"</code> 的盒子，读屏名称会在你的标签后面加上 “not verified product imagery”。看得见的两个圆是装饰，<code>aria-hidden</code>。标签必须有可见文字，贴在实色底上，不叠到一张没核实的照片上。</p>
+    <h3>已经批准的图</h3>
+    <pre><code>media={{
+  url: '/media/wheel-stage.jpg',
+  alt: 'A wheel on a neutral studio stage',
+  width: 1600,
+  height: 900,
+}}</code></pre>
+    <p>宽和高必须是正整数。组件用它们写 <code>aspect-ratio</code>，盒子在图片到达之前就占好比例。<code>&lt;img&gt;</code> 用 <code>object-cover</code> 铺满这个盒子，所以比例和原图不一致时会裁切。裁切不能切掉被当作证据的那一部分，选图时就要留出这个余地。</p>
+    <p>装饰图才把 <code>decorative</code> 设为 <code>true</code>，这时 alt 输出空字符串，读屏会跳过它。内容图不传 alt，或 alt 只有空格，会抛错。</p>
+    <div class="note">
+      <p><strong>不要把任意 JSX 塞进 <code>media</code>。</strong> 以前有过这个口子，调用方可以绕过 alt 和尺寸。现在类型只有上面两种。两种守卫都认不出的对象，<code>renderMedia</code> 抛错。</p>
+    </div>
+
+    <h2 id="throws">哪些输入会直接报错</h2>
+    <p>这些 <code>throw</code> 是设计，不是漏网的异常。构建或渲染到这里就停，避免空白标题、死链接或一张说不清的图进页面。</p>
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>输入</th><th>结果</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>标题或说明是空的、或只有空格</td><td>抛错</td></tr>
+        <tr><td><code>headingId</code> 不是小写 slug</td><td>抛错</td></tr>
+        <tr><td>占位没有可见标签</td><td>抛错</td></tr>
+        <tr><td>内容图没有可用 alt</td><td>抛错</td></tr>
+        <tr><td>图片地址是空的，或宽高不是正整数</td><td>抛错</td></tr>
+        <tr><td>锚点不是 <code>#</code> 加小写 slug，或锚点没有标签</td><td>抛错</td></tr>
+        <tr><td>路由未发布，或路由标签只有空格</td><td>抛错</td></tr>
+        <tr><td><code>media</code> 既不是占位也不是合格图片</td><td>抛错</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2 id="home">首页是怎么调用的</h2>
+    <p>首页在 <code>home-view.tsx</code> 里自己有 <code>&lt;section&gt;</code> 和 1500px 的容器，所以 Hero 用 <code>embedded</code>。外层 section 的名字是 “Home hero”。Hero 内部的 <code>h1</code> id 是调用方给的 <code>home-hero</code>。</p>
+    <pre><code>&lt;Hero
+  pageType="home"
+  embedded
+  headingId="home-hero"
+  title="Four platforms. Two ways to work."
+  description="Explore Wheels, EV Housings, Custom Aluminum and Safety Tires. ..."
+  primaryAction={{ label: 'Explore platforms', anchor: '#platforms' }}
+  secondaryAction={{ label: 'Work paths', anchor: '#work-paths' }}
+  media={{ pending: true, label: 'Approved product imagery pending' }}
+/&gt;</code></pre>
+    <p>两个锚点对应同文件后面的 <code>id="platforms"</code> 和 <code>id="work-paths"</code>。首页 Hero 里没有指向 <code>/request-quote</code> 的按钮。这一页的询盘收在页面后部，不在首屏再重复一次。</p>
+    <p>新页面如果自己没有外框，就不要传 <code>embedded</code>。组件会自己输出 section、最大宽度和上下留白。记得仍只放一个 <code>h1</code>。</p>
+
+    <h2 id="prompt">交给 AI 改之前先写进提示词</h2>
+    <div class="card">
+      <p>改 <code>site/src/components/hero/hero.tsx</code> 时保持这些约束：一页一个 <code>h1</code>；首页只用 <code>type.display</code> 两档字号，其他页只用 <code>type.h1</code> 两档，不要加 768px 的中间档；最多一个红色主按钮和一条文字次链接；网址只从路由登记来，不要在组件里写死路径；媒体只保留已批准图片和待核实占位，不要加回任意 React 节点；空白标题、空白说明、空白标签、未发布路由继续抛错；文字不要压在未核实的照片上。</p>
+    </div>
+    <p>改某一页的句子时，指出那个页面文件，不要改 Hero 的默认文案，因为它没有默认文案。改完跑：</p>
+    <pre><code>cd site
+pnpm exec vitest run --config ./vitest.config.mts tests/int/hero.int.spec.ts</code></pre>
+    <p>这组测试锁着唯一标题、两档字号、一条主按钮、未发布路由、空 alt、占位标签和图片宽高。让 AI 改完却不跑这组测试，最容易把契约改松。</p>
+
+    <footer>
+      <p>对照文件：<code>site/src/components/hero/hero.tsx</code>，调用示例：<code>site/src/components/home/home-view.tsx</code>。阅读日期 2026-11-01。行号会随改动移动，以函数名定位。</p>
+    </footer>
+  </main>
+</body>
+</html>

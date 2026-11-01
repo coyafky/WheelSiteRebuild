@@ -49,3 +49,7 @@ Issues 和 specs 存放在 `.scratch/<feature>/` 下的本地 Markdown 文件。
 ### Domain docs
 
 采用 single-context 布局：根目录 `GLOSSARY.md` 与 `docs/adr/`。见 [`docs/agents/domain.md`](docs/agents/domain.md)。
+
+### Agent 分工
+
+本项目同时使用三个 agent（Codex、Alma、Cursor）。工作按 **ticket 领取制**分配，不按技术层切；每个 ticket 完成时写 handoff 到 ticket 的 `## Comments`。见 [`docs/agents/roles.md`](docs/agents/roles.md)。
