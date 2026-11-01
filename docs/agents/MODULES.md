@@ -87,7 +87,7 @@ main (30d2b32)
 | `feat/global-header-footer` | `60bdb15` | `60bdb15` | 13 | ✅ 同步 |
 | `feat/header-03-products-mega-menu` | `5e209d9` | `5e209d9` | 11 | ✅ 已推送（但落后集成分支两提交，见第五节） |
 | `feat/footer-02-link-groups` | `b87468b` | `b87468b` | 12 | ✅ 已推送 |
-| `feat/global-hero` | `9c906cb` | `9c906cb` | 17 | ✅ 已推送（含本次文档提交） |
+| `feat/global-hero` | `8fffa96` | `8fffa96` | 18 | ✅ 已推送（含本次文档提交） |
 | `feat/breadcrumb-01-preview-route-placeholders` | `8496ace` | `8496ace` | 16 | ✅ 已推送 |
 | `feat/global-breadcrumb` | `ef6fc5b` | `ef6fc5b` | 24 | ✅ 已推送 |
 
