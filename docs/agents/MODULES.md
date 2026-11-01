@@ -99,7 +99,7 @@ main (30d2b32)
 
 ## 四、Agent 归属证据
 
-**提交作者全部是 `coyaFky <2233606771@qq.com>`（34 个提交，唯一作者）** —— 无法从 `git log` 的 author 字段区分 agent。归属只能从 ticket 与提交信息读。
+**提交作者全部是 `coyaFky <2233606771@qq.com>`（唯一作者）** —— 无法从 `git log` 的 author 字段区分 agent。归属只能从 ticket 与提交信息读。
 
 | 证据来源 | 能证明什么 |
 | --- | --- |
